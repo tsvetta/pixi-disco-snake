@@ -11,7 +11,7 @@ module.exports = (env, argv) => {
 
         // Your build destination
         output: {
-            path: path.resolve(__dirname, 'dist'),
+            path: path.resolve(__dirname, 'docs'),
             filename: 'bundle.js'
         },
 
@@ -70,7 +70,10 @@ module.exports = (env, argv) => {
         plugins: [
             // Copy our static assets to the final build
             new CopyPlugin({
-                patterns: [{ from: 'static/' }],
+                patterns: [{
+                    from: 'static/',
+                    noErrorOnMissing: true
+                }],
             }),
 
             // Make an index.html from the template

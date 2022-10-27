@@ -1,11 +1,11 @@
 {
     "compilerOptions": {
         // Settings for the compiler
-        "outDir": "./dist/",
+        "outDir": "./docs/",
         "sourceMap": true,
         "target": "es2015",
         "module": "ESNext",
-    
+
         // Rules for your code
         "strict": true,
         "noImplicitAny": true,
