@@ -7,8 +7,8 @@ const app = new Application({
   resolution: window.devicePixelRatio || 1,
   autoDensity: true,
   backgroundColor: 0x6495ed,
-  width: 640,
-  height: 480,
+  // width: 640,
+  // height: 480,
 });
 
 // app.stage.height = app.screen.height;

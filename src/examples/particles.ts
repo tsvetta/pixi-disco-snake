@@ -14,6 +14,6 @@ export const particelsFn = (container: Container) => {
   );
 
   emitter.autoUpdate = true;
-  emitter.updateSpawnPos(400, 300);
+  emitter.updateSpawnPos(600, 500);
   emitter.emit = true;
 };
