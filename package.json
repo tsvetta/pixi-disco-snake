@@ -7,8 +7,11 @@
     "clean": "rimraf docs"
   },
   "dependencies": {
+    "@pixi/core": "^6.5.8",
+    "@pixi/sound": "4",
     "pixi-particles": "^4.3.1",
-    "pixi.js": "^6.3.0"
+    "pixi.js": "^6.5.8",
+    "tweedle.js": "^2.0.0"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^10.2.4",
