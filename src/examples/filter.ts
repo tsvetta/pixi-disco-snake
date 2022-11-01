@@ -1,8 +1,9 @@
-import { Container, filters } from "pixi.js";
+import { Filter, filters, Sprite } from "pixi.js";
 
-export const filterFn = (container: Container) => {
-  const myBlurFilter = new filters.BlurFilter();
+export const filterFn = (container: Sprite) => {
+  const myBlurFilter: Filter = new filters.BlurFilter();
 
+  // @ts-ignore
   container.filters = [myBlurFilter];
 }
 

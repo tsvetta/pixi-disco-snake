@@ -1,13 +1,15 @@
-import { Container, ParticleContainer, Texture } from "pixi.js";
+import { Application, ParticleContainer, Texture } from "pixi.js";
 import { Emitter as ParticleEmitter } from 'pixi-particles';
 import particleSettings from '../emitter.json';
 
-export const particelsFn = (container: Container) => {
+export const particelsFn = (app: Application) => {
   const particleContainer = new ParticleContainer();
 
-  container.addChild(particleContainer);
+  // @ts-ignore
+  app.stage.addChild(particleContainer);
 
   const emitter = new ParticleEmitter(
+    // @ts-ignore
     particleContainer,
     [Texture.from("particle.png")],
     particleSettings
