@@ -3,16 +3,16 @@
         // Settings for the compiler
         "outDir": "./docs/",
         "sourceMap": true,
-        "target": "es2015",
+        "target": "es2016",
         "module": "ESNext",
 
         // Rules for your code
         "strict": true,
         "noImplicitAny": true,
         "noImplicitReturns": true,
-        "noUnusedParameters": true,
-        "noUnusedLocals": true,
-        "noFallthroughCasesInSwitch": true,
+        "noUnusedParameters": false,
+        "noUnusedLocals": false,
+        "noFallthroughCasesInSwitch": false,
         "noImplicitOverride": true,
 
         // Settings for linking source files

@@ -41,8 +41,6 @@ export const keyboardEventsFn = (app: Application) => {
   app.stage.addChild(star);
 
   const onKeyDownFn = (e: KeyboardEvent) => {
-    console.log(star, app);
-
     switch (true) {
       // @ts-ignore
       case keyCodeMap.top.includes(e.code): {

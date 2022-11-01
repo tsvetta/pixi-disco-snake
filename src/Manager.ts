@@ -1,3 +1,5 @@
+import { Group as TweedleGroup } from "tweedle.js";
+
 import { Application, Container, DisplayObject } from "pixi.js";
 
 export class Manager {
@@ -32,7 +34,6 @@ export class Manager {
 
     Manager.stage = Manager.app.stage;
 
-    // ticker!
     Manager.app.ticker.add(Manager.update);
 
     window.addEventListener("resize", Manager.resize);
@@ -56,7 +57,8 @@ export class Manager {
 
   private static update(framesPassed: number): void {
     if (Manager.currentScene) {
-      Manager.currentScene.update(framesPassed);
+      Manager.currentScene.update(framesPassed); // to move ball
+      // TweedleGroup.shared.update(10); // to animated ball
     }
   }
 }
