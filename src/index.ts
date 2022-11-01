@@ -1,17 +1,8 @@
-import { Application } from "pixi.js";
+import { Manager } from './Manager';
+import { LoaderScene } from './scenes/LoaderScene';
 
-import { examples } from "./examples/index";
+Manager.initialize(640, 480, 0xffffff);
 
-const app = new Application({
-  view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
-  resolution: window.devicePixelRatio || 1,
-  autoDensity: true,
-  backgroundColor: 0x6495ed,
-  width: 1000,
-  height: 700,
-});
+const loady: LoaderScene = new LoaderScene();
 
-app.stage.height = app.screen.height;
-app.stage.width = app.screen.width;
-
-examples(app);
+Manager.changeScene(loady);
