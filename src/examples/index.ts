@@ -15,19 +15,20 @@ import { containerFn } from "./container";
 // import { pointerEventsFn } from "./pointer-events";
 // import { keyboardEventsFn } from "./keyboard-events";
 // import { customEventsFn } from "./custom-events";
-import { soundsFn } from "./sounds";
+// import { soundsFn } from "./sounds";
 
 export const examples = (app: Application) => {
   containerFn(app.stage);
 
   // const clampy: Sprite = Sprite.from("clampy.png");
+  // app.stage.addChild(clampy);
 
   // spriteFn(clampy, app.stage);
   // graphicsFn(app.stage);
   // textFn(app.stage);
   // bitmapFn(app.stage);
   // filterFn(clampy);
-  // particelsFn(app.stage);
+  // particelsFn(app);
   // contextFn();
   // sceneFn(app);
   // animatedSpriteFn(app.stage);
@@ -37,5 +38,5 @@ export const examples = (app: Application) => {
   // pointerEventsFn(app);
   // keyboardEventsFn(app);
   // customEventsFn(app);
-  soundsFn(app);
+  // soundsFn(app);
 };
