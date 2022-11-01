@@ -1,7 +1,6 @@
 import { Application, /* Sprite */ } from "pixi.js";
 
 import { containerFn } from "./container";
-
 // import { spriteFn } from "./sprite";
 // import { graphicsFn } from "./graphics";
 // import { textFn } from "./text";
@@ -10,8 +9,13 @@ import { containerFn } from "./container";
 // import { particelsFn } from "./particles";
 // import { contextFn } from "./context";
 // import { sceneFn } from "./scene";
-
-import { animatedSpriteFn } from "./animated-sprite";
+// import { /* AnimatedScene, */ animatedSpriteFn } from "./animated-sprite";
+// import { tickerFn } from "./ticker";
+// import { tweensFn } from "./tweens";
+// import { pointerEventsFn } from "./pointer-events";
+// import { keyboardEventsFn } from "./keyboard-events";
+// import { customEventsFn } from "./custom-events";
+import { soundsFn } from "./sounds";
 
 export const examples = (app: Application) => {
   containerFn(app.stage);
@@ -26,6 +30,12 @@ export const examples = (app: Application) => {
   // particelsFn(app.stage);
   // contextFn();
   // sceneFn(app);
-
-  animatedSpriteFn(app.stage);
+  // animatedSpriteFn(app.stage);
+  // const animatedStars = new AnimatedScene(app.stage);
+  // tickerFn(app);
+  // tweensFn(app);
+  // pointerEventsFn(app);
+  // keyboardEventsFn(app);
+  // customEventsFn(app);
+  soundsFn(app);
 };

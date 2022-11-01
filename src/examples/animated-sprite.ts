@@ -26,3 +26,35 @@ export const animatedSpriteFn = (container: Container) => {
 
   sprite.play();
 };
+
+
+// example from documentation (almost)
+
+// export class AnimatedScene extends Container {
+//   constructor(parentContainer: Container) {
+//       super();
+
+//       const starFrames: Texture[] = [
+//         Texture.from("star.png"),
+//         Texture.from("star-2.png"),
+//       ];
+
+//       const animatedStarSprite: AnimatedSprite = new AnimatedSprite(starFrames);
+
+//       parentContainer.addChild(animatedStarSprite);
+
+//       animatedStarSprite.onFrameChange = this.onClampyFrameChange.bind(this);
+
+//       animatedStarSprite.animationSpeed = 0.1;
+//       animatedStarSprite.x = 200;
+//       animatedStarSprite.y = 100;
+//       animatedStarSprite.width = 300;
+//       animatedStarSprite.height = 300;
+
+//       animatedStarSprite.play();
+//   }
+
+//   private onClampyFrameChange(currentFrame: number): void {
+//       console.log("Start's current frame is", currentFrame);
+//   }
+// }

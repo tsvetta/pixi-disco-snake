@@ -7,11 +7,11 @@ const app = new Application({
   resolution: window.devicePixelRatio || 1,
   autoDensity: true,
   backgroundColor: 0x6495ed,
-  // width: 640,
-  // height: 480,
+  width: 1000,
+  height: 700,
 });
 
-// app.stage.height = app.screen.height;
-// app.stage.width = app.screen.width;
+app.stage.height = app.screen.height;
+app.stage.width = app.screen.width;
 
 examples(app);
