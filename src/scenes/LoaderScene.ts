@@ -1,13 +1,7 @@
 import { BitmapFont, BitmapText, Container, Graphics, Loader } from "pixi.js";
+import { discoAssets } from "../assets";
 import { IScene, Manager } from "../Manager";
 import { GameScene } from "./GameScene";
-
-export const discoAssets = [
-  { name: "disco ball 1", url: "disco/discoball_1.png" },
-  { name: "disco ball 2", url: "disco/discoball_2.png" },
-  { name: "disco ball 3", url: "disco/discoball_3.png" },
-  { name: "disco ball 4", url: "disco/discoball_4.png" },
-]
 
 export class LoaderScene extends Container implements IScene {
     // for making our loader graphics...
@@ -37,6 +31,7 @@ export class LoaderScene extends Container implements IScene {
         this.loaderBar.position.y = (Manager.height - this.loaderBar.height) / 2;
         this.addChild(this.loaderBar);
 
+        // Add loader title
         BitmapFont.from('monotype', {
             fill: '#ffffff',
             fontFamily: 'monospace',
@@ -68,12 +63,12 @@ export class LoaderScene extends Container implements IScene {
     }
 
     private gameLoaded(): void {
-        // Change scene to the game scene!
         Manager.changeScene(new GameScene());
     }
 
     // @ts-ignore
-    public update(framesPassed: number): void {
-        // To be a scene we must have the update method even if we don't use it.
-    }
+    public update(framesPassed: number): void {}
+
+    // @ts-ignore
+    public resize(framesPassed: number): void {}
 }

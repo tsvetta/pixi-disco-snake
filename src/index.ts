@@ -1,8 +1,8 @@
 import { Manager } from './Manager';
 import { LoaderScene } from './scenes/LoaderScene';
 
-Manager.initialize(640, 480, 0xffffff);
+Manager.initialize(0xffffff);
 
-const loady: LoaderScene = new LoaderScene();
+const loaderScene: LoaderScene = new LoaderScene();
 
-Manager.changeScene(loady);
+Manager.changeScene(loaderScene);
