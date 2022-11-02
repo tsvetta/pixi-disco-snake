@@ -21,34 +21,41 @@ const keyCodeMap: KeyCodes = {
 
 const drawGrid = (w: number, h: number) => {
   const grid = new Graphics();
+  const topPadding = 4;
+  const sidesPadding = 1;
 
-  const space = CELL_SIZE;
-  const width = CELL_SIZE;
+  grid.x = CELL_SIZE;
+  grid.y = CELL_SIZE * topPadding;
+  grid.tint = 0x00ff00;
 
-  grid.beginFill(0x141414);
+  console.log(grid);
 
+  grid.beginFill();
 
-  const verticalLines = Math.ceil(w / CELL_SIZE) + 1;
-  const horizontalLines = Math.ceil(h / CELL_SIZE) + 1;
+  const lineHeightLeftover = h % CELL_SIZE;
+  const actualLineHeight = h - lineHeightLeftover;
+  const horizontalLines = actualLineHeight / CELL_SIZE - topPadding;
 
-  console.log(verticalLines, horizontalLines, w, h);
+  const lineWidthLeftover = w % CELL_SIZE;
+  const actualLineWidth = w - lineWidthLeftover;
+  const verticalLines = actualLineWidth / CELL_SIZE - sidesPadding;
 
-  for (let i = 0; i < horizontalLines; i++) {
-    const x1 = 0;
-    const y1 = i * space;
-    const width1 = width * width * width;
-    const height1 = 1;
+  grid.lineStyle(1, 0x141414);
 
-    grid.drawRect(x1, y1, width1, height1);
+  for (let i = 0; i <= horizontalLines; i++) {
+    const nextLinePosition = 0 + i * CELL_SIZE;
+    const horizontalLineWidth =
+      actualLineWidth - CELL_SIZE * (sidesPadding * 2);
+
+    grid.drawRect(0, nextLinePosition, horizontalLineWidth, 1);
   }
 
   for (let i = 0; i < verticalLines; i++) {
-    const x2 = i * space;
-    const y2 = 0;
-    const width2 = 1;
-    const height2 = width * width * width;
+    const nextLinePosition = 0 + i * CELL_SIZE;
+    const verticalLineHeight =
+      actualLineHeight - CELL_SIZE * topPadding - sidesPadding;
 
-    grid.drawRect(x2, y2, width2, height2);
+    grid.drawRect(nextLinePosition, 0, 1, verticalLineHeight);
   }
 
   grid.endFill();
@@ -58,83 +65,58 @@ const drawGrid = (w: number, h: number) => {
 
 type Direction = "left" | "right" | "top" | "bottom";
 export class GameScene extends Container implements IScene {
-  public static direction: Direction = 'right';
+  public static direction: Direction = "right";
 
-  private disco: Sprite;
-  private discoTween: Tween<ObservablePoint>;
+  public static disco: Sprite;
+  public static discoTween: Tween<ObservablePoint>;
   private grid: Graphics = drawGrid(Manager.width, Manager.height);
-  private discoVelocity: number = 5;
+  public static discoVelocity: number = CELL_SIZE;
 
-  private moveTop() {
-    this.disco.y -= this.discoVelocity;
+  public static moveTop() {
+    GameScene.disco.y -= GameScene.discoVelocity;
 
-    if (this.disco.y < 0) {
-      this.disco.y = Manager.height;
+    if (GameScene.disco.y < 0) {
+      GameScene.disco.y = Manager.height;
     }
   }
 
-  private moveRight() {
-    this.disco.x += this.discoVelocity;
+  public static moveRight() {
+    GameScene.disco.x += GameScene.discoVelocity;
 
-    if (this.disco.x > Manager.width) {
-      this.disco.x = 0;
+    if (GameScene.disco.x > Manager.width) {
+      GameScene.disco.x = 0;
     }
   }
 
-  private moveLeft() {
-    this.disco.x -= this.discoVelocity;
+  public static moveLeft() {
+    GameScene.disco.x -= GameScene.discoVelocity;
 
-    if (this.disco.x < 0) {
-      this.disco.x = Manager.width;
+    if (GameScene.disco.x < 0) {
+      GameScene.disco.x = Manager.width;
     }
   }
 
-  private moveBottom() {
-    this.disco.y += this.discoVelocity;
+  public static moveBottom() {
+    GameScene.disco.y += GameScene.discoVelocity;
 
-    if (this.disco.y > Manager.height) {
-      this.disco.y = 0;
-    }
-  }
-
-  private changeDirection(e: KeyboardEvent): void {
-    console.log(e.code, GameScene.direction);
-    switch (true) {
-      case keyCodeMap.top.includes(e.code): {
-        GameScene.direction = "top"; // не влияет на update??
-        break;
-      }
-
-      case keyCodeMap.right.includes(e.code): {
-        GameScene.direction = "right";
-        break;
-      }
-
-      case keyCodeMap.bottom.includes(e.code): {
-        GameScene.direction = "bottom";
-        break;
-      }
-
-      case keyCodeMap.left.includes(e.code): {
-        GameScene.direction = "left";
-        break;
-      }
+    if (GameScene.disco.y > Manager.height) {
+      GameScene.disco.y = 0;
     }
   }
 
   constructor() {
     super();
 
-    this.disco = Sprite.from("disco ball 1");
+    GameScene.disco = Sprite.from("disco ball 1");
 
-    this.disco.x = CELL_SIZE * 10;
-    this.disco.y = CELL_SIZE * 10;
-    this.disco.height = CELL_SIZE;
-    this.disco.width = CELL_SIZE;
+    GameScene.disco.x = CELL_SIZE * 10;
+    GameScene.disco.y = CELL_SIZE * 10;
+    GameScene.disco.height = CELL_SIZE;
+    GameScene.disco.width = CELL_SIZE;
 
-    this.addChild(this.disco);
+    this.addChild(GameScene.disco);
 
-    this.discoTween = new Tween(this.disco.scale)
+    GameScene.discoTween = new Tween(GameScene.disco.scale)
       .to({ x: 0.4, y: 0.4 }, 500)
       .repeat(Infinity)
       .yoyo(true)
@@ -145,28 +127,53 @@ export class GameScene extends Container implements IScene {
     document.addEventListener("keydown", this.changeDirection);
   }
 
+  private changeDirection(e: KeyboardEvent): void {
+    switch (true) {
+      case keyCodeMap.top.includes(e.code): {
+        GameScene.direction = "top"; // нужно ли?
+        GameScene.moveTop();
+
+        break;
+      }
+
+      case keyCodeMap.right.includes(e.code): {
+        GameScene.direction = "right";
+        GameScene.moveRight();
+        break;
+      }
+
+      case keyCodeMap.bottom.includes(e.code): {
+        GameScene.direction = "bottom";
+        GameScene.moveBottom();
+        break;
+      }
+
+      case keyCodeMap.left.includes(e.code): {
+        GameScene.direction = "left";
+        GameScene.moveLeft();
+        break;
+      }
+    }
+  }
+
   // Lets disco!
   public update(): void {
-    switch (GameScene.direction) {
-      case "top":
-        this.moveTop();
-        break;
-
-      case "right":
-        this.moveRight();
-        break;
-
-      case "left":
-        this.moveLeft();
-        break;
-
-      case "bottom":
-        this.moveBottom();
-        break;
-
-      default:
-        break;
-    }
+    // switch (GameScene.direction) {
+    //   case "top":
+    //     this.moveTop();
+    //     break;
+    //   case "right":
+    //     this.moveRight();
+    //     break;
+    //   case "left":
+    //     this.moveLeft();
+    //     break;
+    //   case "bottom":
+    //     this.moveBottom();
+    //     break;
+    //   default:
+    //     break;
+    // }
   }
 
   public resize(w: number, h: number): void {

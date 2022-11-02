@@ -57,7 +57,7 @@ export class Manager {
 
   private static update(framesPassed: number): void {
     if (Manager.currentScene) {
-      Manager.currentScene.update(framesPassed); // to move ball
+      // Manager.currentScene.update(framesPassed); // to move ball
       // TweedleGroup.shared.update(10); // to animated ball
     }
   }
