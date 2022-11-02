@@ -79,19 +79,51 @@ const drawGrid = (w: number, h: number) => {
   boundaries.ypxEnd = boundaries.yCells * CELL_SIZE + grid.y;
 
   boundaries.leftEdge = grid.x;
-  boundaries.rightEdge =  Manager.width - CELL_SIZE * 2;
-  boundaries.topEdge = grid.y
-  boundaries.bottomEdge =  Manager.height - CELL_SIZE;
+  boundaries.rightEdge = Manager.width - CELL_SIZE * 2;
+  boundaries.topEdge = grid.y;
+  boundaries.bottomEdge = Manager.height - CELL_SIZE;
 
   grid.endFill();
 
   return grid;
 };
 
+const generateBooty = (snakeCoords: string[]) => {
+  const ballNumber = Math.ceil(Math.random() * 10);
+  let rndXCell = CELL_SIZE;
+  let rndYCell = CELL_SIZE;
+
+  do {
+    rndXCell = Math.floor(Math.random() * boundaries.xCells);
+    rndYCell = Math.floor(Math.random() * boundaries.yCells);
+  } while (snakeCoords.includes(`${rndXCell},${rndYCell}`)); // no intersections with snake
+
+  const xCellpx = Math.min(
+    Math.max(rndXCell * CELL_SIZE, boundaries.leftEdge),
+    boundaries.rightEdge
+  );
+  const yCellpx = Math.min(
+    Math.max(rndYCell * CELL_SIZE, boundaries.topEdge),
+    boundaries.bottomEdge
+  );
+
+  return {
+    ballNumber,
+    xCellpx,
+    yCellpx,
+  };
+};
+
+const getCoordsFromSnake = (cell: string): number[] => {
+  return cell.split(",").map(Number);
+};
+
 type Direction = "left" | "right" | "top" | "bottom";
 export class GameScene extends Container implements IScene {
   public direction: Direction = "right";
+  private discoSnakeCoords: string[] = ["10,10"]; // TODO randomize
   private disco: Sprite;
+  private discoBooty: Sprite;
   // private discoTween: Tween<ObservablePoint>;
   private grid: Graphics = drawGrid(Manager.width, Manager.height);
   private discoJumpLength: number = CELL_SIZE;
@@ -141,10 +173,9 @@ export class GameScene extends Container implements IScene {
   constructor() {
     super();
 
-    this.disco = Sprite.from("disco ball 1");
-
-    this.disco.x = CELL_SIZE * 10;
-    this.disco.y = CELL_SIZE * 10;
+    this.disco = Sprite.from("disco ball 1"); // harry?
+    this.disco.x = CELL_SIZE * getCoordsFromSnake(this.discoSnakeCoords[0])[0]; // first position
+    this.disco.y = CELL_SIZE * getCoordsFromSnake(this.discoSnakeCoords[0])[1];
     this.disco.height = CELL_SIZE;
     this.disco.width = CELL_SIZE;
 
@@ -160,6 +191,15 @@ export class GameScene extends Container implements IScene {
     Manager.changeSpeed(DEFAULT_SPEED);
 
     document.addEventListener("keydown", this.changeDirection.bind(this));
+
+    const bootyData = generateBooty(this.discoSnakeCoords);
+    this.discoBooty = Sprite.from(`disco ball ${bootyData.ballNumber}`);
+    Manager.stage.addChild(this.discoBooty);
+
+    this.discoBooty.height = CELL_SIZE;
+    this.discoBooty.width = CELL_SIZE;
+    this.discoBooty.x = bootyData.xCellpx;
+    this.discoBooty.y = bootyData.yCellpx;
   }
 
   private changeDirection(e: KeyboardEvent): void {
@@ -193,8 +233,6 @@ export class GameScene extends Container implements IScene {
       }
     }
   }
-
-  public maxDelta = 30;
 
   // Lets disco!
   public update(): void {
