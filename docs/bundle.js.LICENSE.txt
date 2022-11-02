@@ -116,6 +116,16 @@ object-assign
  * http://www.opensource.org/licenses/mit-license
  */
 
+/*!
+ * tweedle.js - v2.0.0
+ * Compiled Thu, 28 Oct 2021 18:52:17 UTC
+ *
+ * tweedle.js is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ * 
+ * Copyright 2019-2021, Milton Candelero <miltoncandelero@gmail.com>, All Rights Reserved
+ */
+
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
 
