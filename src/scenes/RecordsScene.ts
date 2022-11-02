@@ -3,67 +3,97 @@ import { IScene, Manager } from "../Manager";
 import { GameScene } from "./GameScene";
 
 export class RecordsScene extends Container implements IScene {
-    // for making our loader graphics...
-    private startTitle: BitmapText;
-    private startButton: Graphics;
-    private buttonTitle: BitmapText;
+  private recordsTitle: BitmapText;
+  private recordsList: BitmapText;
 
-    constructor() {
-        super();
+  private drawPageTitle() {
+    BitmapFont.from("monotype", {
+      fill: "#ffffff",
+      fontFamily: "monospace",
+      fontSize: 30,
+    });
 
-        // Add loader title
-        BitmapFont.from('monotype', {
-            fill: '#ffffff',
-            fontFamily: 'monospace',
-            fontSize: 30,
-        });
+    const recordsTitle = new BitmapText("RECORDS", {
+      fontName: "monotype",
+      fontSize: 50,
+      tint: 0x1fc95b,
+    });
 
-        this.startTitle = new BitmapText('RECORDS', {
-            fontName: 'monotype',
-            fontSize: 30,
-            tint: 0x1fc95b,
-        });
+    recordsTitle.position.x = (Manager.width - recordsTitle.width) / 2;
+    recordsTitle.position.y = 100;
 
-        this.startTitle.position.x = (Manager.width - this.startTitle.width) / 2;
-        this.startTitle.position.y = 100;
+    this.addChild(recordsTitle);
 
-        this.addChild(this.startTitle);
+    return recordsTitle;
+  }
 
-        const buttonWidth = Manager.width * 0.5;
+  private drawRecordsList(): BitmapText {
+    BitmapFont.from("monotype", {
+      fill: "#ffffff",
+      fontFamily: "monospace",
+      fontSize: 30,
+    });
 
-        this.startButton = new Graphics();
-        this.startButton.beginFill(0x1fc95b, 1);
-        this.startButton.drawRect(0, 0, buttonWidth, 50);
-        this.startButton.endFill();
-        this.startButton.x = (Manager.width - this.startButton.width) / 2;
-        this.startButton.y = (Manager.height - this.startButton.height) / 2;
+    const recordList = new BitmapText("blabla", {
+      fontName: "monotype",
+      fontSize: 50,
+      tint: 0xffffff,
+    });
 
-        this.addChild(this.startButton)
+    recordList.position.x = (Manager.width - recordList.width) / 2;
+    recordList.position.y = (Manager.height + this.recordsTitle.height) / 2;
 
-        this.buttonTitle = new BitmapText('Records', {
-          fontName: 'monotype',
-          fontSize: 30,
-          tint: 0x000000,
-      });
+    this.addChild(recordList);
 
-      this.buttonTitle.x = (this.startButton.width - this.buttonTitle.width) / 2;
-      this.buttonTitle.y = (this.startButton.height - this.buttonTitle.height) / 2;
+    return recordList;
+  }
 
-      this.startButton.addChild(this.buttonTitle);
+  private drawRecordsButton(): [Graphics, BitmapText] {
+    const recordsButton = new Graphics();
+    const recordsButtonTitle = new BitmapText("PLAY", {
+      fontName: "monotype",
+      fontSize: 30,
+      tint: 0x000000,
+    });
 
-      this.startButton.interactive = true;
-      this.startButton.cursor = 'crosshair';
+    recordsButton.beginFill(0x1fc95b, 1);
+    const recordsButtonWidth = Manager.width * 0.5;
+    recordsButton.drawRect(0, 0, recordsButtonWidth, 50);
+    recordsButton.endFill();
 
-      this.startButton.on('click', this.gameLoad);
-    }
+    this.addChild(recordsButton);
+    recordsButton.addChild(recordsButtonTitle);
 
-    private gameLoad(): void {
-        Manager.changeScene(new GameScene());
-    }
+    recordsButton.interactive = true;
+    recordsButton.cursor = "crosshair";
 
-    // @ts-ignore
-    public update(framesPassed: number): void {}
+    recordsButton.x = (Manager.width - recordsButton.width) / 2;
+    recordsButton.y = Manager.height - 200;
 
-    // @ts-ignore
-    public resize(framesPassed: number): void {}
+    recordsButtonTitle.x = (recordsButton.width - recordsButtonTitle.width) / 2;
+    recordsButtonTitle.y =
+      (recordsButton.height - recordsButtonTitle.height) / 2;
+
+    recordsButton.on("click", this.gameLoad);
+
+    return [recordsButton, recordsButtonTitle];
+  }
+
+  constructor() {
+    super();
+
+    this.recordsTitle = this.drawPageTitle();
+    this.recordsList = this.drawRecordsList();
+    this.drawRecordsButton();
+  }
+
+  private gameLoad(): void {
+    Manager.changeScene(new GameScene());
+  }
+
+  // @ts-ignore
+  public update(framesPassed: number): void {}
+
+  // @ts-ignore
+  public resize(framesPassed: number): void {}
 }

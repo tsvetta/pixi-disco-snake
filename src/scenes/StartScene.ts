@@ -4,11 +4,7 @@ import { GameScene } from "./GameScene";
 import { RecordsScene } from "./RecordsScene";
 
 export class StartScene extends Container implements IScene {
-  private startTitle: BitmapText;
   private startButton: Graphics;
-  private startButtonTitle: BitmapText;
-  private recordsButton: Graphics;
-  private recordsButtonTitle: BitmapText;
 
   private drawPageTitle() {
     BitmapFont.from("monotype", {
@@ -33,7 +29,7 @@ export class StartScene extends Container implements IScene {
 
   private drawStartButton(): [Graphics, BitmapText] {
     const startButton = new Graphics();
-    const startButtonTitle = new BitmapText("Begin Game", {
+    const startButtonTitle = new BitmapText("PLAY", {
       fontName: "monotype",
       fontSize: 30,
       tint: 0x000000,
@@ -95,11 +91,11 @@ export class StartScene extends Container implements IScene {
   constructor() {
     super();
 
-    this.startTitle = this.drawPageTitle();
+    this.drawPageTitle();
     this.startButton = this.drawStartButton()[0];
-    this.startButtonTitle = this.drawStartButton()[1];
-    this.recordsButton = this.drawRecordsButton()[0];
-    this.recordsButtonTitle = this.drawRecordsButton()[1];
+    this.drawStartButton()[1];
+    this.drawRecordsButton()[0];
+    this.drawRecordsButton()[1];
   }
 
   private gameLoad(): void {
