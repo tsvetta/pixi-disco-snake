@@ -65,17 +65,16 @@ const drawGrid = (w: number, h: number) => {
 
 type Direction = "left" | "right" | "top" | "bottom";
 export class GameScene extends Container implements IScene {
-  public static direction: Direction = "right";
-
-  private static disco: Sprite;
-  // private static discoTween: Tween<ObservablePoint>;
+  public direction: Direction = "right";
+  private disco: Sprite;
+  // private discoTween: Tween<ObservablePoint>;
   private grid: Graphics = drawGrid(Manager.width, Manager.height);
-  private static discoJumpLength: number = CELL_SIZE;
+  private discoJumpLength: number = CELL_SIZE;
 
-  private static move(direction: Direction) {
+  private move(direction: Direction) {
     switch (direction) {
       case "top": {
-        this.disco.y -= GameScene.discoJumpLength;
+        this.disco.y -= this.discoJumpLength;
 
         if (this.disco.y < 0) {
           this.disco.y = Manager.height;
@@ -84,7 +83,7 @@ export class GameScene extends Container implements IScene {
       }
 
       case "right": {
-        this.disco.x += GameScene.discoJumpLength;
+        this.disco.x += this.discoJumpLength;
 
         if (this.disco.x > Manager.width) {
           this.disco.x = 0;
@@ -94,7 +93,7 @@ export class GameScene extends Container implements IScene {
       }
 
       case "left": {
-        this.disco.x -= GameScene.discoJumpLength;
+        this.disco.x -= this.discoJumpLength;
 
         if (this.disco.x < 0) {
           this.disco.x = Manager.width;
@@ -103,7 +102,7 @@ export class GameScene extends Container implements IScene {
       }
 
       case "bottom": {
-        this.disco.y += GameScene.discoJumpLength;
+        this.disco.y += this.discoJumpLength;
 
         if (this.disco.y > Manager.height) {
           this.disco.y = 0;
@@ -117,16 +116,16 @@ export class GameScene extends Container implements IScene {
   constructor() {
     super();
 
-    GameScene.disco = Sprite.from("disco ball 1");
+    this.disco = Sprite.from("disco ball 1");
 
-    GameScene.disco.x = CELL_SIZE * 10;
-    GameScene.disco.y = CELL_SIZE * 10;
-    GameScene.disco.height = CELL_SIZE;
-    GameScene.disco.width = CELL_SIZE;
+    this.disco.x = CELL_SIZE * 10;
+    this.disco.y = CELL_SIZE * 10;
+    this.disco.height = CELL_SIZE;
+    this.disco.width = CELL_SIZE;
 
-    this.addChild(GameScene.disco);
+    this.addChild(this.disco);
 
-    // GameScene.discoTween = new Tween(this.disco.scale)
+    // this.discoTween = new Tween(this.disco.scale)
     //   .to({ x: 0.4, y: 0.4 }, 500)
     //   .repeat(Infinity)
     //   .yoyo(true)
@@ -141,30 +140,30 @@ export class GameScene extends Container implements IScene {
   private changeDirection(e: KeyboardEvent): void {
     switch (true) {
       case keyCodeMap.top.includes(e.code): {
-        GameScene.direction = "top"; // нужно ли?
+        this.direction = "top"; // нужно ли?
         Manager.changeSpeedDelta(0);
-        GameScene.move('top');
+        this.move('top');
         break;
       }
 
       case keyCodeMap.right.includes(e.code): {
-        GameScene.direction = "right";
+        this.direction = "right";
         Manager.changeSpeedDelta(0);
-        GameScene.move('right');
+        this.move('right');
         break;
       }
 
       case keyCodeMap.bottom.includes(e.code): {
-        GameScene.direction = "bottom";
+        this.direction = "bottom";
         Manager.changeSpeedDelta(0);
-        GameScene.move('bottom');
+        this.move('bottom');
         break;
       }
 
       case keyCodeMap.left.includes(e.code): {
-        GameScene.direction = "left";
+        this.direction = "left";
         Manager.changeSpeedDelta(0);
-        GameScene.move('left');
+        this.move('left');
         break;
       }
     }
@@ -174,18 +173,18 @@ export class GameScene extends Container implements IScene {
 
   // Lets disco!
   public update(): void {
-    switch (GameScene.direction) {
+    switch (this.direction) {
       case "top":
-        GameScene.move('top');
+        this.move('top');
         break;
       case "right":
-        GameScene.move('right');
+        this.move('right');
         break;
       case "left":
-        GameScene.move('left');
+        this.move('left');
         break;
       case "bottom":
-        GameScene.move('bottom');
+        this.move('bottom');
         break;
       default:
         break;
