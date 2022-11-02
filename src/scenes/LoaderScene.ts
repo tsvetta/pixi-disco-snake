@@ -1,6 +1,7 @@
 import { BitmapFont, BitmapText, Container, Graphics, Loader } from "pixi.js";
 import { discoAssets } from "../assets";
 import { IScene, Manager } from "../Manager";
+import { StartScene } from "./StartScene";
 import { GameScene } from "./GameScene";
 
 export class LoaderScene extends Container implements IScene {
@@ -63,7 +64,8 @@ export class LoaderScene extends Container implements IScene {
     }
 
     private gameLoaded(): void {
-        Manager.changeScene(new GameScene());
+        // Manager.changeScene(new GameScene());
+        Manager.changeScene(new StartScene());
     }
 
     // @ts-ignore
