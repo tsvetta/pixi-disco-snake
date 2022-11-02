@@ -53,6 +53,7 @@ export class StartScene extends Container implements IScene {
     startButtonTitle.y = (startButton.height - startButtonTitle.height) / 2;
 
     startButton.on("click", this.gameLoad);
+    startButton.on("tap", this.gameLoad);
 
     return [startButton, startButtonTitle];
   }
@@ -84,6 +85,7 @@ export class StartScene extends Container implements IScene {
     (recordsButton.height - recordsButtonTitle.height) / 2;
 
     recordsButton.on("click", this.goToRecords);
+    recordsButton.on("tap", this.goToRecords);
 
     return [recordsButton, recordsButtonTitle];
   }

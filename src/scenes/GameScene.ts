@@ -21,6 +21,10 @@ const keyCodeMap: KeyCodes = {
 
 const DEFAULT_SPEED = 50;
 
+const boundaries = {
+
+};
+
 const drawGrid = (w: number, h: number) => {
   const grid = new Graphics();
   const topPadding = 4;

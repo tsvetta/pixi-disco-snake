@@ -48,35 +48,36 @@ export class RecordsScene extends Container implements IScene {
     return recordList;
   }
 
-  private drawRecordsButton(): [Graphics, BitmapText] {
-    const recordsButton = new Graphics();
-    const recordsButtonTitle = new BitmapText("PLAY", {
+  private drawPlayButton(): [Graphics, BitmapText] {
+    const playButton = new Graphics();
+    const playButtonTitle = new BitmapText("PLAY", {
       fontName: "monotype",
       fontSize: 30,
       tint: 0x000000,
     });
 
-    recordsButton.beginFill(0x1fc95b, 1);
-    const recordsButtonWidth = Manager.width * 0.5;
-    recordsButton.drawRect(0, 0, recordsButtonWidth, 50);
-    recordsButton.endFill();
+    playButton.beginFill(0x1fc95b, 1);
+    const playButtonWidth = Manager.width * 0.5;
+    playButton.drawRect(0, 0, playButtonWidth, 50);
+    playButton.endFill();
 
-    this.addChild(recordsButton);
-    recordsButton.addChild(recordsButtonTitle);
+    this.addChild(playButton);
+    playButton.addChild(playButtonTitle);
 
-    recordsButton.interactive = true;
-    recordsButton.cursor = "crosshair";
+    playButton.interactive = true;
+    playButton.cursor = "crosshair";
 
-    recordsButton.x = (Manager.width - recordsButton.width) / 2;
-    recordsButton.y = Manager.height - 200;
+    playButton.x = (Manager.width - playButton.width) / 2;
+    playButton.y = Manager.height - 200;
 
-    recordsButtonTitle.x = (recordsButton.width - recordsButtonTitle.width) / 2;
-    recordsButtonTitle.y =
-      (recordsButton.height - recordsButtonTitle.height) / 2;
+    playButtonTitle.x = (playButton.width - playButtonTitle.width) / 2;
+    playButtonTitle.y =
+      (playButton.height - playButtonTitle.height) / 2;
 
-    recordsButton.on("click", this.gameLoad);
+    playButton.on("click", this.gameLoad);
+    playButton.on("tap", this.gameLoad);
 
-    return [recordsButton, recordsButtonTitle];
+    return [playButton, playButtonTitle];
   }
 
   constructor() {
@@ -84,7 +85,7 @@ export class RecordsScene extends Container implements IScene {
 
     this.recordsTitle = this.drawPageTitle();
     this.recordsList = this.drawRecordsList();
-    this.drawRecordsButton();
+    this.drawPlayButton();
   }
 
   private gameLoad(): void {
