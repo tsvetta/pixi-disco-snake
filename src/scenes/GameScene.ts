@@ -187,8 +187,8 @@ export class GameScene extends Container implements IScene {
   private refreshBooty() {
     this.discoBooty.destroy();
     this.bootyData = generateBooty(this.discoSnakeCoords);
-    // this.discoBooty = this.bootyData.sunriseParabellum
-    this.discoBooty = true
+    // this.discoBooty = true
+    this.discoBooty = this.bootyData.sunriseParabellum
       ? Sprite.from("Kim")
       : Sprite.from(`disco ball ${this.bootyData.ballNumber}`);
     Manager.stage.addChild(this.discoBooty);
