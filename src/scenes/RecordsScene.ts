@@ -20,7 +20,7 @@ export class RecordsScene extends Container implements IScene {
     });
 
     recordsTitle.position.x = (Manager.width - recordsTitle.width) / 2;
-    recordsTitle.position.y = 100;
+    recordsTitle.position.y = 50;
 
     this.addChild(recordsTitle);
 
@@ -65,10 +65,11 @@ export class RecordsScene extends Container implements IScene {
     playButton.addChild(playButtonTitle);
 
     playButton.interactive = true;
+    playButton.buttonMode = true;
     playButton.cursor = "crosshair";
 
     playButton.x = (Manager.width - playButton.width) / 2;
-    playButton.y = Manager.height - 200;
+    playButton.y = Manager.height - 70;
 
     playButtonTitle.x = (playButton.width - playButtonTitle.width) / 2;
     playButtonTitle.y =

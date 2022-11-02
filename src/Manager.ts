@@ -48,7 +48,8 @@ export class Manager {
   public static changeScene(newScene: IScene): void {
     if (Manager.currentScene) {
       Manager.app.stage.removeChild(Manager.currentScene);
-      Manager.currentScene.destroy();
+
+      Manager.currentScene.destroy(); // not destroying game -> records ???
     }
 
     Manager.currentScene = newScene;
@@ -66,13 +67,14 @@ export class Manager {
   }
 
   private static update(delta: number): void {
+    TweedleGroup.shared.update(100); // to animate booty
+
     Manager.currentDelta += delta;
 
     if (Manager.currentDelta >= Manager.maxDelta) {
       Manager.currentDelta = 5; // нужен запас, чтобы не перескакивало при нажатии клавиатуры???
       if (Manager.currentScene) {
         Manager.currentScene.update(delta); // to move ball
-        // TweedleGroup.shared.update(10); // to animated ball
       }
     }
   }

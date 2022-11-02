@@ -1,7 +1,8 @@
-import { Container, Graphics, ObservablePoint, Sprite } from "pixi.js";
+import { BitmapText, Container, Graphics, Sprite } from "pixi.js";
 import { Tween } from "tweedle.js";
 
 import { IScene, Manager } from "../Manager";
+import { RecordsScene } from "./RecordsScene";
 
 const CELL_SIZE = 30;
 
@@ -119,14 +120,20 @@ const getCoordsFromSnake = (cell: string): number[] => {
 };
 
 type Direction = "left" | "right" | "top" | "bottom";
+
 export class GameScene extends Container implements IScene {
   public direction: Direction = "right";
   private discoSnakeCoords: string[] = ["10,10"]; // TODO randomize
   private disco: Sprite;
-  private discoBooty: Sprite;
-  // private discoTween: Tween<ObservablePoint>;
+  private discoBooty: Sprite = Sprite.from(`disco ball ${generateBooty(this.discoSnakeCoords).ballNumber}`);
   private grid: Graphics = drawGrid(Manager.width, Manager.height);
   private discoJumpLength: number = CELL_SIZE;
+  private points: number = 0;
+  private pointsCounter = new BitmapText(`${this.points}`, {
+    fontName: "monotype",
+    fontSize: 30,
+    tint: 0xffffff,
+  });
 
   private move(direction: Direction) {
     switch (direction) {
@@ -170,8 +177,77 @@ export class GameScene extends Container implements IScene {
     }
   }
 
+  private refreshBooty() {
+    this.discoBooty.destroy();
+    const bootyData = generateBooty(this.discoSnakeCoords);
+    this.discoBooty = Sprite.from(`disco ball ${bootyData.ballNumber}`);
+    Manager.stage.addChild(this.discoBooty);
+
+    this.discoBooty.height = CELL_SIZE;
+    this.discoBooty.width = CELL_SIZE;
+    this.discoBooty.x = bootyData.xCellpx;
+    this.discoBooty.y = bootyData.yCellpx;
+
+    // animate booty
+    new Tween(this.discoBooty.scale)
+      .to({ x: 0.5, y: 0.5 }, 1000)
+      .repeat(Infinity)
+      .yoyo(true)
+      .start();
+  }
+
+  private drawRecordsButton() {
+    const recordsButton = new Graphics();
+    const recordsButtonTitle = new BitmapText("RECORDS", {
+      fontName: "monotype",
+      fontSize: 30,
+      tint: 0x000000,
+    });
+
+    recordsButton.beginFill(0x1fc95b, 1);
+    const recordsButtonWidth = 300;
+    recordsButton.drawRect(0, 0, recordsButtonWidth, 50);
+    recordsButton.endFill();
+
+    this.addChild(recordsButton);
+    recordsButton.addChild(recordsButtonTitle);
+
+    recordsButton.interactive = true;
+    recordsButton.cursor = "crosshair";
+
+    recordsButton.x = Manager.width - recordsButton.width - CELL_SIZE;
+    recordsButton.y = CELL_SIZE;
+
+    recordsButtonTitle.x = (recordsButton.width - recordsButtonTitle.width) / 2;
+    recordsButtonTitle.y =
+    (recordsButton.height - recordsButtonTitle.height) / 2;
+
+    recordsButton.on("click", this.goToRecords);
+    recordsButton.on("tap", this.goToRecords);
+  }
+
+  private drawPointsCounter() {
+    const pointsText = new BitmapText("POINTS:", {
+      fontName: "monotype",
+      fontSize: 30,
+      tint: 0x00ff00,
+    });
+
+    this.addChild(pointsText);
+    this.addChild(this.pointsCounter);
+
+    pointsText.x = CELL_SIZE;
+    pointsText.y = CELL_SIZE;
+
+    this.pointsCounter.x = pointsText.width + 50;
+    this.pointsCounter.y = CELL_SIZE;
+  }
+
   constructor() {
     super();
+
+    this.drawRecordsButton();
+    this.drawPointsCounter();
 
     this.disco = Sprite.from("disco ball 1"); // harry?
     this.disco.x = CELL_SIZE * getCoordsFromSnake(this.discoSnakeCoords[0])[0]; // first position
@@ -181,28 +257,26 @@ export class GameScene extends Container implements IScene {
 
     this.addChild(this.disco);
 
-    // this.discoTween = new Tween(this.disco.scale)
-    //   .to({ x: 0.4, y: 0.4 }, 500)
-    //   .repeat(Infinity)
-    //   .yoyo(true)
-    //   .start();
-
     Manager.stage.addChild(this.grid);
     Manager.changeSpeed(DEFAULT_SPEED);
 
-    document.addEventListener("keydown", this.changeDirection.bind(this));
+    document.addEventListener("keydown", this.changeDirection);
 
-    const bootyData = generateBooty(this.discoSnakeCoords);
-    this.discoBooty = Sprite.from(`disco ball ${bootyData.ballNumber}`);
-    Manager.stage.addChild(this.discoBooty);
-
-    this.discoBooty.height = CELL_SIZE;
-    this.discoBooty.width = CELL_SIZE;
-    this.discoBooty.x = bootyData.xCellpx;
-    this.discoBooty.y = bootyData.yCellpx;
+    this.refreshBooty();
   }
 
-  private changeDirection(e: KeyboardEvent): void {
+  private checkCollision() {
+    const isCollided = this.disco.x === this.discoBooty.x && this.disco.y === this.discoBooty.y;
+
+    if (isCollided) {
+      this.points++;
+      this.pointsCounter.text = `${this.points}`;
+
+      this.refreshBooty();
+    }
+  }
+
+  private changeDirection = (e: KeyboardEvent): void => {
     switch (true) {
       case keyCodeMap.top.includes(e.code): {
         this.direction = "top"; // нужно ли?
@@ -232,6 +306,8 @@ export class GameScene extends Container implements IScene {
         break;
       }
     }
+
+    this.checkCollision();
   }
 
   // Lets disco!
@@ -252,11 +328,18 @@ export class GameScene extends Container implements IScene {
       default:
         break;
     }
+
+    this.checkCollision();
   }
 
   public resize(w: number, h: number): void {
     this.grid.destroy();
     this.grid = drawGrid(w, h);
     Manager.stage.addChild(this.grid);
+  }
+
+  private goToRecords = (): void => {
+    this.discoBooty.destroy();
+    Manager.changeScene(new RecordsScene());
   }
 }

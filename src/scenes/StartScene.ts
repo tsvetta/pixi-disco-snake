@@ -44,6 +44,7 @@ export class StartScene extends Container implements IScene {
     startButton.addChild(startButtonTitle);
 
     startButton.interactive = true;
+    startButton.buttonMode = true;
     startButton.cursor = "crosshair";
 
     startButton.x = (Manager.width - startButton.width) / 2;
@@ -75,6 +76,7 @@ export class StartScene extends Container implements IScene {
     recordsButton.addChild(recordsButtonTitle);
 
     recordsButton.interactive = true;
+    recordsButton.buttonMode = true;
     recordsButton.cursor = "crosshair";
 
     recordsButton.x = (Manager.width - recordsButton.width) / 2;
