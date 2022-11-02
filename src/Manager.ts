@@ -55,10 +55,25 @@ export class Manager {
     Manager.app.stage.addChild(Manager.currentScene);
   }
 
-  private static update(framesPassed: number): void {
-    if (Manager.currentScene) {
-      // Manager.currentScene.update(framesPassed); // to move ball
-      // TweedleGroup.shared.update(10); // to animated ball
+  private static maxDelta = 50;
+  public static changeSpeed(maxDelta: number): void {
+    Manager.maxDelta = maxDelta;
+  }
+
+  private static currentDelta = 0;
+  public static changeSpeedDelta(delta: number): void {
+    Manager.currentDelta = delta;
+  }
+
+  private static update(delta: number): void {
+    Manager.currentDelta += delta;
+
+    if (Manager.currentDelta >= Manager.maxDelta) {
+      Manager.currentDelta = 5; // нужен запас, чтобы не перескакивало при нажатии клавиатуры???
+      if (Manager.currentScene) {
+        Manager.currentScene.update(delta); // to move ball
+        // TweedleGroup.shared.update(10); // to animated ball
+      }
     }
   }
 }
@@ -66,4 +81,5 @@ export class Manager {
 export interface IScene extends DisplayObject {
   update(framesPassed: number): void;
   resize(screenWidth: number, screenHeight: number): void;
+  maxDelta?: number;
 }

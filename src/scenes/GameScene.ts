@@ -19,6 +19,8 @@ const keyCodeMap: KeyCodes = {
   left: ["ArrowLeft", "KeyA"],
 };
 
+const DEFAULT_SPEED = 50;
+
 const drawGrid = (w: number, h: number) => {
   const grid = new Graphics();
   const topPadding = 4;
@@ -27,8 +29,6 @@ const drawGrid = (w: number, h: number) => {
   grid.x = CELL_SIZE;
   grid.y = CELL_SIZE * topPadding;
   grid.tint = 0x00ff00;
-
-  console.log(grid);
 
   grid.beginFill();
 
@@ -67,40 +67,50 @@ type Direction = "left" | "right" | "top" | "bottom";
 export class GameScene extends Container implements IScene {
   public static direction: Direction = "right";
 
-  public static disco: Sprite;
-  public static discoTween: Tween<ObservablePoint>;
+  private static disco: Sprite;
+  // private static discoTween: Tween<ObservablePoint>;
   private grid: Graphics = drawGrid(Manager.width, Manager.height);
-  public static discoVelocity: number = CELL_SIZE;
+  private static discoJumpLength: number = CELL_SIZE;
 
-  public static moveTop() {
-    GameScene.disco.y -= GameScene.discoVelocity;
+  private static move(direction: Direction) {
+    switch (direction) {
+      case "top": {
+        this.disco.y -= GameScene.discoJumpLength;
 
-    if (GameScene.disco.y < 0) {
-      GameScene.disco.y = Manager.height;
-    }
-  }
+        if (this.disco.y < 0) {
+          this.disco.y = Manager.height;
+        }
+        break;
+      }
 
-  public static moveRight() {
-    GameScene.disco.x += GameScene.discoVelocity;
+      case "right": {
+        this.disco.x += GameScene.discoJumpLength;
 
-    if (GameScene.disco.x > Manager.width) {
-      GameScene.disco.x = 0;
-    }
-  }
+        if (this.disco.x > Manager.width) {
+          this.disco.x = 0;
+        }
 
-  public static moveLeft() {
-    GameScene.disco.x -= GameScene.discoVelocity;
+        break;
+      }
 
-    if (GameScene.disco.x < 0) {
-      GameScene.disco.x = Manager.width;
-    }
-  }
+      case "left": {
+        this.disco.x -= GameScene.discoJumpLength;
 
-  public static moveBottom() {
-    GameScene.disco.y += GameScene.discoVelocity;
+        if (this.disco.x < 0) {
+          this.disco.x = Manager.width;
+        }
+        break;
+      }
 
-    if (GameScene.disco.y > Manager.height) {
-      GameScene.disco.y = 0;
+      case "bottom": {
+        this.disco.y += GameScene.discoJumpLength;
+
+        if (this.disco.y > Manager.height) {
+          this.disco.y = 0;
+        }
+
+        break;
+      }
     }
   }
 
@@ -116,13 +126,14 @@ export class GameScene extends Container implements IScene {
 
     this.addChild(GameScene.disco);
 
-    GameScene.discoTween = new Tween(GameScene.disco.scale)
-      .to({ x: 0.4, y: 0.4 }, 500)
-      .repeat(Infinity)
-      .yoyo(true)
-      .start();
+    // GameScene.discoTween = new Tween(this.disco.scale)
+    //   .to({ x: 0.4, y: 0.4 }, 500)
+    //   .repeat(Infinity)
+    //   .yoyo(true)
+    //   .start();
 
     Manager.stage.addChild(this.grid);
+    Manager.changeSpeed(DEFAULT_SPEED);
 
     document.addEventListener("keydown", this.changeDirection);
   }
@@ -131,49 +142,54 @@ export class GameScene extends Container implements IScene {
     switch (true) {
       case keyCodeMap.top.includes(e.code): {
         GameScene.direction = "top"; // нужно ли?
-        GameScene.moveTop();
-
+        Manager.changeSpeedDelta(0);
+        GameScene.move('top');
         break;
       }
 
       case keyCodeMap.right.includes(e.code): {
         GameScene.direction = "right";
-        GameScene.moveRight();
+        Manager.changeSpeedDelta(0);
+        GameScene.move('right');
         break;
       }
 
       case keyCodeMap.bottom.includes(e.code): {
         GameScene.direction = "bottom";
-        GameScene.moveBottom();
+        Manager.changeSpeedDelta(0);
+        GameScene.move('bottom');
         break;
       }
 
       case keyCodeMap.left.includes(e.code): {
         GameScene.direction = "left";
-        GameScene.moveLeft();
+        Manager.changeSpeedDelta(0);
+        GameScene.move('left');
         break;
       }
     }
   }
 
+  public maxDelta = 30;
+
   // Lets disco!
   public update(): void {
-    // switch (GameScene.direction) {
-    //   case "top":
-    //     this.moveTop();
-    //     break;
-    //   case "right":
-    //     this.moveRight();
-    //     break;
-    //   case "left":
-    //     this.moveLeft();
-    //     break;
-    //   case "bottom":
-    //     this.moveBottom();
-    //     break;
-    //   default:
-    //     break;
-    // }
+    switch (GameScene.direction) {
+      case "top":
+        GameScene.move('top');
+        break;
+      case "right":
+        GameScene.move('right');
+        break;
+      case "left":
+        GameScene.move('left');
+        break;
+      case "bottom":
+        GameScene.move('bottom');
+        break;
+      default:
+        break;
+    }
   }
 
   public resize(w: number, h: number): void {
