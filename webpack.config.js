@@ -34,19 +34,20 @@ module.exports = (env, argv) => {
         performance: { hints: false },
 
         // Enable sourcemaps while debugging
-        devtool: argv.mode === 'development' ? 'eval-source-map' : undefined,
+        // devtool: argv.mode === 'development' ? 'eval-source-map' : undefined,
+        devtool: 'eval-source-map',
 
         // Minify the code when making a final build
-        optimization: {
-            minimize: argv.mode === 'production',
-            minimizer: [new TerserPlugin({
-                terserOptions: {
-                    ecma: 6,
-                    compress: { drop_console: true },
-                    output: { comments: false, beautify: false },
-                },
-            })],
-        },
+        // optimization: {
+        //     minimize: argv.mode === 'production',
+        //     minimizer: [new TerserPlugin({
+        //         terserOptions: {
+        //             ecma: 6,
+        //             compress: { drop_console: true },
+        //             output: { comments: false, beautify: false },
+        //         },
+        //     })],
+        // },
 
 
         // Explain webpack how to do Typescript
