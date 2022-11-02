@@ -22,7 +22,16 @@ const keyCodeMap: KeyCodes = {
 const DEFAULT_SPEED = 50;
 
 const boundaries = {
-
+  xCells: 0, // cell in x row
+  yCells: 0,
+  xpxStart: 0,
+  xpxEnd: 0,
+  ypxStart: 0,
+  ypxEnd: 0,
+  leftEdge: 0,
+  rightEdge: 0,
+  topEdge: 0,
+  bottomEdge: 0,
 };
 
 const drawGrid = (w: number, h: number) => {
@@ -62,6 +71,18 @@ const drawGrid = (w: number, h: number) => {
     grid.drawRect(nextLinePosition, 0, 1, verticalLineHeight);
   }
 
+  boundaries.xCells = verticalLines - 1;
+  boundaries.yCells = horizontalLines - 1;
+  boundaries.xpxStart = grid.x;
+  boundaries.xpxEnd = boundaries.xCells * CELL_SIZE;
+  boundaries.ypxStart = grid.y;
+  boundaries.ypxEnd = boundaries.yCells * CELL_SIZE + grid.y;
+
+  boundaries.leftEdge = grid.x;
+  boundaries.rightEdge =  Manager.width - CELL_SIZE * 2;
+  boundaries.topEdge = grid.y
+  boundaries.bottomEdge =  Manager.height - CELL_SIZE;
+
   grid.endFill();
 
   return grid;
@@ -80,8 +101,8 @@ export class GameScene extends Container implements IScene {
       case "top": {
         this.disco.y -= this.discoJumpLength;
 
-        if (this.disco.y < 0) {
-          this.disco.y = Manager.height;
+        if (this.disco.y < boundaries.topEdge) {
+          this.disco.y = boundaries.ypxEnd;
         }
         break;
       }
@@ -89,8 +110,8 @@ export class GameScene extends Container implements IScene {
       case "right": {
         this.disco.x += this.discoJumpLength;
 
-        if (this.disco.x > Manager.width) {
-          this.disco.x = 0;
+        if (this.disco.x > boundaries.rightEdge) {
+          this.disco.x = boundaries.xpxStart;
         }
 
         break;
@@ -99,8 +120,8 @@ export class GameScene extends Container implements IScene {
       case "left": {
         this.disco.x -= this.discoJumpLength;
 
-        if (this.disco.x < 0) {
-          this.disco.x = Manager.width;
+        if (this.disco.x < boundaries.leftEdge) {
+          this.disco.x = boundaries.xpxEnd;
         }
         break;
       }
@@ -108,8 +129,8 @@ export class GameScene extends Container implements IScene {
       case "bottom": {
         this.disco.y += this.discoJumpLength;
 
-        if (this.disco.y > Manager.height) {
-          this.disco.y = 0;
+        if (this.disco.y > boundaries.bottomEdge) {
+          this.disco.y = boundaries.ypxStart;
         }
 
         break;
@@ -138,7 +159,7 @@ export class GameScene extends Container implements IScene {
     Manager.stage.addChild(this.grid);
     Manager.changeSpeed(DEFAULT_SPEED);
 
-    document.addEventListener("keydown", this.changeDirection);
+    document.addEventListener("keydown", this.changeDirection.bind(this));
   }
 
   private changeDirection(e: KeyboardEvent): void {
@@ -146,28 +167,28 @@ export class GameScene extends Container implements IScene {
       case keyCodeMap.top.includes(e.code): {
         this.direction = "top"; // нужно ли?
         Manager.changeSpeedDelta(0);
-        this.move('top');
+        this.move("top");
         break;
       }
 
       case keyCodeMap.right.includes(e.code): {
         this.direction = "right";
         Manager.changeSpeedDelta(0);
-        this.move('right');
+        this.move("right");
         break;
       }
 
       case keyCodeMap.bottom.includes(e.code): {
         this.direction = "bottom";
         Manager.changeSpeedDelta(0);
-        this.move('bottom');
+        this.move("bottom");
         break;
       }
 
       case keyCodeMap.left.includes(e.code): {
         this.direction = "left";
         Manager.changeSpeedDelta(0);
-        this.move('left');
+        this.move("left");
         break;
       }
     }
@@ -179,16 +200,16 @@ export class GameScene extends Container implements IScene {
   public update(): void {
     switch (this.direction) {
       case "top":
-        this.move('top');
+        this.move("top");
         break;
       case "right":
-        this.move('right');
+        this.move("right");
         break;
       case "left":
-        this.move('left');
+        this.move("left");
         break;
       case "bottom":
-        this.move('bottom');
+        this.move("bottom");
         break;
       default:
         break;

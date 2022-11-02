@@ -64,8 +64,8 @@ export class LoaderScene extends Container implements IScene {
     }
 
     private gameLoaded(): void {
-        // Manager.changeScene(new GameScene());
-        Manager.changeScene(new StartScene());
+        Manager.changeScene(new GameScene());
+        // Manager.changeScene(new StartScene());
     }
 
     // @ts-ignore
