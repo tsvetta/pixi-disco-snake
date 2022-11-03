@@ -166,9 +166,10 @@ export class GameScene extends Container implements IScene {
     Manager.changeSpeedDelta(0); // to prevent jumping after pressing the key
     // Manager.changeSpeed(60); // TODO: make it faster
 
+    console.log(direction);
     switch (direction) {
       case "top": {
-        if (this.direction === 'bottom') break; // can't go backwards
+        if (this.direction === "bottom") break; // can't go backwards
         this.direction = "top";
 
         for (let i = this.discoSnake.length - 1; i >= 0; i--) {
@@ -197,7 +198,7 @@ export class GameScene extends Container implements IScene {
       }
 
       case "right": {
-        if (this.direction === 'left') break; // can't go backwards
+        if (this.direction === "left") break; // can't go backwards
         this.direction = "right";
 
         for (let i = this.discoSnake.length - 1; i >= 0; i--) {
@@ -214,7 +215,8 @@ export class GameScene extends Container implements IScene {
 
           // if first unit
           if (i === 0) {
-            this.discoSnake[i].snakeUnit.x = this.discoSnake[i].snakeUnit.x + CELL_SIZE;
+            this.discoSnake[i].snakeUnit.x =
+              this.discoSnake[i].snakeUnit.x + CELL_SIZE;
             this.discoSnake[i].coords = `${oldCoords[0] + 1},${oldCoords[1]}`;
           } else {
             this.discoSnake[i].snakeUnit.x = this.discoSnake[i - 1].snakeUnit.x;
@@ -226,7 +228,7 @@ export class GameScene extends Container implements IScene {
       }
 
       case "left": {
-        if (this.direction === 'right') break; // can't go backwards
+        if (this.direction === "right") break; // can't go backwards
         this.direction = "left";
 
         for (let i = this.discoSnake.length - 1; i >= 0; i--) {
@@ -243,7 +245,8 @@ export class GameScene extends Container implements IScene {
 
           // if first unit
           if (i === 0) {
-            this.discoSnake[i].snakeUnit.x = this.discoSnake[i].snakeUnit.x - CELL_SIZE;
+            this.discoSnake[i].snakeUnit.x =
+              this.discoSnake[i].snakeUnit.x - CELL_SIZE;
             this.discoSnake[i].coords = `${oldCoords[0] - 1},${oldCoords[1]}`;
           } else {
             this.discoSnake[i].snakeUnit.x = this.discoSnake[i - 1].snakeUnit.x;
@@ -255,7 +258,7 @@ export class GameScene extends Container implements IScene {
       }
 
       case "bottom": {
-        if (this.direction === 'top') break; // can't go backwards
+        if (this.direction === "top") break; // can't go backwards
         this.direction = "bottom";
 
         for (let i = this.discoSnake.length - 1; i >= 0; i--) {
@@ -272,7 +275,8 @@ export class GameScene extends Container implements IScene {
 
           // if first unit
           if (i === 0) {
-            this.discoSnake[i].snakeUnit.y = this.discoSnake[i].snakeUnit.y + CELL_SIZE;
+            this.discoSnake[i].snakeUnit.y =
+              this.discoSnake[i].snakeUnit.y + CELL_SIZE;
             this.discoSnake[i].coords = `${oldCoords[0]},${oldCoords[1] + 1}`;
           } else {
             this.discoSnake[i].snakeUnit.y = this.discoSnake[i - 1].snakeUnit.y;
@@ -290,6 +294,11 @@ export class GameScene extends Container implements IScene {
     this.discoBooty = this.bootyData.sunriseParabellum
       ? Sprite.from("Kim")
       : Sprite.from(`disco ball ${this.bootyData.ballNumber}`);
+
+    this.discoBooty.name = this.bootyData.sunriseParabellum
+      ? "Kim"
+      : `disco ball ${this.bootyData.ballNumber}`;
+
     Manager.stage.addChild(this.discoBooty);
 
     this.discoBooty.height = CELL_SIZE;
@@ -378,7 +387,7 @@ export class GameScene extends Container implements IScene {
     this.createNewBooty();
 
     this.discoSnake[0].snakeUnit.addListener("grow", () => {
-      this.computeBootyPositionInSnake();
+      // this.computeBootyPositionInSnake();
       // this.move(this.direction)
       this.addChild(this.discoBooty);
     });
@@ -386,41 +395,42 @@ export class GameScene extends Container implements IScene {
 
   private computeBootyPositionInSnake = () => {
     const prevSnakePart = this.discoSnake[this.discoSnake.length - 2];
+    const discoBooty = this.discoSnake[this.discoSnake.length - 1].snakeUnit;
 
-    console.log("old booty position", this.discoBooty.x, this.discoBooty.y);
+    console.log("old booty position", discoBooty.x, discoBooty.y);
 
     switch (this.direction) {
       case "top": {
-        if (this.discoBooty.y === boundaries.bottomEdge) {
-          this.discoBooty.y = boundaries.bottomEdge + CELL_SIZE;
+        if (discoBooty.y === boundaries.bottomEdge) {
+          discoBooty.y = boundaries.bottomEdge + CELL_SIZE;
         } else {
-          this.discoBooty.y = prevSnakePart.snakeUnit.y + CELL_SIZE;
+          discoBooty.y = prevSnakePart.snakeUnit.y + CELL_SIZE;
         }
 
         break;
       }
       case "left": {
-        if (this.discoBooty.x === boundaries.rightEdge) {
-          this.discoBooty.x = boundaries.rightEdge + CELL_SIZE;
+        if (discoBooty.x === boundaries.rightEdge) {
+          discoBooty.x = boundaries.rightEdge + CELL_SIZE;
         } else {
-          this.discoBooty.x = prevSnakePart.snakeUnit.x + CELL_SIZE;
+          discoBooty.x = prevSnakePart.snakeUnit.x + CELL_SIZE;
         }
 
         break;
       }
       case "right": {
-        if (this.discoBooty.x === boundaries.leftEdge) {
-          this.discoBooty.x = boundaries.leftEdge - CELL_SIZE;
+        if (discoBooty.x === boundaries.leftEdge) {
+          discoBooty.x = boundaries.leftEdge - CELL_SIZE;
         } else {
-          this.discoBooty.x = prevSnakePart.snakeUnit.x - CELL_SIZE;
+          discoBooty.x = prevSnakePart.snakeUnit.x - CELL_SIZE;
         }
         break;
       }
       case "bottom": {
-        if (this.discoBooty.y === boundaries.topEdge) {
-          this.discoBooty.y = boundaries.bottomEdge - CELL_SIZE;
+        if (discoBooty.y === boundaries.topEdge) {
+          discoBooty.y = boundaries.bottomEdge - CELL_SIZE;
         } else {
-          this.discoBooty.y = prevSnakePart.snakeUnit.y - CELL_SIZE;
+          discoBooty.y = prevSnakePart.snakeUnit.y - CELL_SIZE;
         }
 
         break;
@@ -448,10 +458,12 @@ export class GameScene extends Container implements IScene {
 
       // add new poart to the snake's tail, not animated
       this.animatedBooty.end();
+
       this.discoSnake.push({
         snakeUnit: this.bootyData.booty,
         coords: this.bootyData.coords,
       });
+      // this.discoBooty.destroy();
 
       // place new part near the end of the existing tail
       this.discoSnake[0].snakeUnit.emit("grow");
