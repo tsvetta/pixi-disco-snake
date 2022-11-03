@@ -3,6 +3,7 @@ import { Tween } from "tweedle.js";
 
 import { IScene, Manager } from "../Manager";
 import { RecordsScene } from "./RecordsScene";
+import { Direction, SnakeData } from "./snake-types";
 
 const CELL_SIZE = 30;
 
@@ -89,15 +90,21 @@ const drawGrid = (w: number, h: number) => {
   return grid;
 };
 
-const generateBooty = (snakeCoords: string[]) => {
+const getCoordsFromSnake = (cell: string): number[] => {
+  return cell.split(",").map(Number);
+};
+
+const generateBooty = () => {
   const ballNumber = Math.ceil(Math.random() * 10);
   let rndXCell = CELL_SIZE;
   let rndYCell = CELL_SIZE;
 
+  const coords = ["10,10"]; // TODO randomize
+
   do {
     rndXCell = Math.floor(Math.random() * boundaries.xCells);
     rndYCell = Math.floor(Math.random() * boundaries.yCells);
-  } while (snakeCoords.includes(`${rndXCell},${rndYCell}`)); // no intersections with snake
+  } while (coords.includes(`${rndXCell},${rndYCell}`)); // no intersections with snake
 
   const xCellpx = Math.min(
     Math.max(rndXCell * CELL_SIZE, boundaries.leftEdge),
@@ -109,27 +116,29 @@ const generateBooty = (snakeCoords: string[]) => {
   );
 
   // just because
-  const sunriseParabellum = Math.floor(Math.random() * 100) % 9 === 0;
+  const MAGIC_KIM_NUMBER = 9;
+  const sunriseParabellum =
+    Math.floor(Math.random() * 100) % MAGIC_KIM_NUMBER === 0;
+
+  const booty: Sprite = Sprite.from(`disco ball ${ballNumber}`);
 
   return {
+    booty,
+    coords,
     ballNumber,
-    xCellpx,
+    xCellpx, // make same as coords?
     yCellpx,
     sunriseParabellum,
   };
 };
 
-const getCoordsFromSnake = (cell: string): number[] => {
-  return cell.split(",").map(Number);
-};
-
-type Direction = "left" | "right" | "top" | "bottom";
-
 export class GameScene extends Container implements IScene {
   public direction: Direction = "right";
-  private discoSnakeCoords: string[] = ["10,10"]; // TODO randomize
-  private disco: Sprite;
-  private bootyData = generateBooty(this.discoSnakeCoords);
+  private bootyData = generateBooty();
+  private disco: Sprite[] = [this.bootyData.booty];
+  // @ts-ignore
+  private animatedBooty: Tween<ObservablePoint<any>>;
+
   private discoBooty: Sprite = Sprite.from(
     `disco ball ${this.bootyData.ballNumber}`
   );
@@ -145,38 +154,40 @@ export class GameScene extends Container implements IScene {
   private move(direction: Direction) {
     switch (direction) {
       case "top": {
-        this.disco.y -= this.discoJumpLength;
+        for (let i = 0; i < this.disco.length; i++) {
+          this.disco[i].y -= this.discoJumpLength;
 
-        if (this.disco.y < boundaries.topEdge) {
-          this.disco.y = boundaries.ypxEnd;
+          if (this.disco[i].y < boundaries.topEdge) {
+            this.disco[i].y = boundaries.ypxEnd;
+          }
         }
         break;
       }
 
       case "right": {
-        this.disco.x += this.discoJumpLength;
+        this.disco[0].x += this.discoJumpLength;
 
-        if (this.disco.x > boundaries.rightEdge) {
-          this.disco.x = boundaries.xpxStart;
+        if (this.disco[0].x > boundaries.rightEdge) {
+          this.disco[0].x = boundaries.xpxStart;
         }
 
         break;
       }
 
       case "left": {
-        this.disco.x -= this.discoJumpLength;
+        this.disco[0].x -= this.discoJumpLength;
 
-        if (this.disco.x < boundaries.leftEdge) {
-          this.disco.x = boundaries.xpxEnd;
+        if (this.disco[0].x < boundaries.leftEdge) {
+          this.disco[0].x = boundaries.xpxEnd;
         }
         break;
       }
 
       case "bottom": {
-        this.disco.y += this.discoJumpLength;
+        this.disco[0].y += this.discoJumpLength;
 
-        if (this.disco.y > boundaries.bottomEdge) {
-          this.disco.y = boundaries.ypxStart;
+        if (this.disco[0].y > boundaries.bottomEdge) {
+          this.disco[0].y = boundaries.ypxStart;
         }
 
         break;
@@ -185,9 +196,8 @@ export class GameScene extends Container implements IScene {
   }
 
   private refreshBooty() {
-    this.discoBooty.destroy();
-    this.bootyData = generateBooty(this.discoSnakeCoords);
-    // this.discoBooty = true
+    // this.discoBooty.destroy();
+    this.bootyData = generateBooty();
     this.discoBooty = this.bootyData.sunriseParabellum
       ? Sprite.from("Kim")
       : Sprite.from(`disco ball ${this.bootyData.ballNumber}`);
@@ -200,7 +210,7 @@ export class GameScene extends Container implements IScene {
     this.discoBooty.anchor.set(0.5);
 
     // animate booty
-    new Tween(this.discoBooty.scale)
+    this.animatedBooty = new Tween(this.discoBooty.scale)
       .to({ x: 0.6, y: 0.6 }, 2000)
       .repeat(Infinity)
       .yoyo(true)
@@ -260,14 +270,16 @@ export class GameScene extends Container implements IScene {
     this.drawRecordsButton();
     this.drawPointsCounter();
 
-    this.disco = Sprite.from("Harry");
-    this.disco.x = CELL_SIZE * getCoordsFromSnake(this.discoSnakeCoords[0])[0]; // first position
-    this.disco.y = CELL_SIZE * getCoordsFromSnake(this.discoSnakeCoords[0])[1];
-    this.disco.height = CELL_SIZE;
-    this.disco.width = CELL_SIZE;
-    this.disco.anchor.set(0.5);
+    this.disco = [Sprite.from("Harry")];
+    this.disco[0].x =
+      CELL_SIZE * getCoordsFromSnake(this.bootyData.coords[0])[0]; // first position
+    this.disco[0].y =
+      CELL_SIZE * getCoordsFromSnake(this.bootyData.coords[0])[1];
+    this.disco[0].height = CELL_SIZE;
+    this.disco[0].width = CELL_SIZE;
+    this.disco[0].anchor.set(0.5);
 
-    this.addChild(this.disco);
+    this.addChild(this.disco[0]);
 
     Manager.stage.addChild(this.grid);
     Manager.changeSpeed(DEFAULT_SPEED);
@@ -275,11 +287,36 @@ export class GameScene extends Container implements IScene {
     document.addEventListener("keydown", this.changeDirection);
 
     this.refreshBooty();
+
+    this.disco[0].addListener("grow", () => {
+      this.addChild(this.discoBooty);
+    });
   }
 
-  private checkCollision() {
+  private computeBootyPositionInSnake = () => {
+    const prevSnakePart = this.disco[this.disco.length - 2];
+
+    switch (this.direction) {
+      case "top":
+        this.discoBooty.y = prevSnakePart.y + CELL_SIZE;
+        break;
+      case "left":
+        this.discoBooty.x = prevSnakePart.x + CELL_SIZE;
+        break;
+      case "right":
+        this.discoBooty.x = prevSnakePart.x - CELL_SIZE;
+        break;
+      case "bottom":
+        this.discoBooty.y = prevSnakePart.y - CELL_SIZE;
+        break;
+    }
+  };
+
+  private checkCollision = () => {
     const isCollided =
-      this.disco.x === this.discoBooty.x && this.disco.y === this.discoBooty.y;
+      this.disco.filter(
+        (d) => d.x === this.bootyData.xCellpx && d.y === this.bootyData.yCellpx
+      ).length !== 0;
 
     if (isCollided) {
       if (this.bootyData.sunriseParabellum) {
@@ -290,9 +327,17 @@ export class GameScene extends Container implements IScene {
 
       this.pointsCounter.text = `${this.points}`;
 
+      this.disco.push(this.bootyData.booty);
+
+      this.animatedBooty.end();
+
+      this.computeBootyPositionInSnake();
+
+      this.disco[0].emit("grow");
+
       this.refreshBooty();
     }
-  }
+  };
 
   private changeDirection = (e: KeyboardEvent): void => {
     switch (true) {
