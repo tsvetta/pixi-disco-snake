@@ -3,7 +3,15 @@ import { Tween } from "tweedle.js";
 
 import { IScene, Manager } from "../Manager";
 import { GameOverScene } from "./GameOverScene";
-import { boundaries, CELL_SIZE, DEFAULT_SPEED, drawGrid, generateBootyData, getCoordsFromSnake, keyCodeMap } from "./helpers";
+import {
+  boundaries,
+  CELL_SIZE,
+  DEFAULT_SPEED,
+  drawGrid,
+  generateBootyData,
+  getCoordsFromSnake,
+  keyCodeMap,
+} from "./helpers";
 import { RecordsScene } from "./RecordsScene";
 
 import { Direction, SnakeData } from "./snake-types";
@@ -240,7 +248,7 @@ export class GameScene extends Container implements IScene {
       { snakeUnit: Sprite.from("Harry"), coords: "10,10" },
       { snakeUnit: Sprite.from("Harry"), coords: "10,11" },
       { snakeUnit: Sprite.from("Harry"), coords: "10,12" },
-    ] as  SnakeData[];
+    ] as SnakeData[];
     this.discoSnake.forEach((_, i) => {
       this.discoSnake[i].snakeUnit.x =
         CELL_SIZE * getCoordsFromSnake(this.discoSnake[i].coords)[0]; // first position
@@ -252,7 +260,7 @@ export class GameScene extends Container implements IScene {
       this.discoSnake[i].snakeUnit.zIndex = 100;
 
       this.addChild(this.discoSnake[i].snakeUnit);
-    })
+    });
 
     Manager.stage.addChild(this.grid);
     Manager.changeSpeed(DEFAULT_SPEED);
@@ -300,7 +308,9 @@ export class GameScene extends Container implements IScene {
     }
 
     const allUnitsCoords = this.discoSnake.map((s) => s.coords);
-    const headCoords = allUnitsCoords.filter(c => c === this.discoSnake[0].coords);
+    const headCoords = allUnitsCoords.filter(
+      (c) => c === this.discoSnake[0].coords
+    );
     const isCollidedWithTail = headCoords.length > 1;
 
     if (isCollidedWithTail) {
@@ -370,6 +380,17 @@ export class GameScene extends Container implements IScene {
 
   private gameOver = (): void => {
     this.discoBooty.destroy();
+
+    const recordsLS = localStorage.getItem('DiscoSnakeRecords') || '';
+    const newRecords = recordsLS + `;Tanya:${this.points}`;
+
+    localStorage.removeItem('DiscoSnakeRecords');
+
+    localStorage.setItem(
+      "DiscoSnakeRecords",
+      JSON.stringify(newRecords),
+    );
+
     Manager.changeScene(new GameOverScene());
   };
 }

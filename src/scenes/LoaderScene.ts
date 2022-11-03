@@ -3,6 +3,7 @@ import { discoAssets } from "../assets";
 import { IScene, Manager } from "../Manager";
 import { StartScene } from "./StartScene";
 import { GameScene } from "./GameScene";
+import { GameOverScene } from "./GameOverScene";
 
 export class LoaderScene extends Container implements IScene {
     // for making our loader graphics...
@@ -64,8 +65,7 @@ export class LoaderScene extends Container implements IScene {
     }
 
     private gameLoaded(): void {
-        Manager.changeScene(new GameScene());
-        // Manager.changeScene(new StartScene());
+        Manager.changeScene(new StartScene());
     }
 
     // @ts-ignore

@@ -4,7 +4,7 @@ import { GameScene } from "./GameScene";
 
 export class RecordsScene extends Container implements IScene {
   private recordsTitle: BitmapText;
-  private recordsList: BitmapText;
+  private records: string[];
 
   private drawPageTitle() {
     BitmapFont.from("monotype", {
@@ -27,25 +27,51 @@ export class RecordsScene extends Container implements IScene {
     return recordsTitle;
   }
 
-  private drawRecordsList(): BitmapText {
-    BitmapFont.from("monotype", {
-      fill: "#ffffff",
-      fontFamily: "monospace",
-      fontSize: 30,
+  private drawRecordsList() {
+    BitmapFont.from(
+      "monotype",
+      {
+        fill: "#ffffff",
+        fontFamily: "monospace",
+        fontSize: 30,
+      },
+      { chars: BitmapFont.ASCII }
+    );
+
+    // debugger
+    if (this.records.length === 1 && this.records[0] === "") {
+      const recordBitmap = new BitmapText("NO RECORDS YET", {
+        fontName: "monotype",
+        fontSize: 30,
+        tint: 0xffffff,
+        align: "left",
+      });
+
+      recordBitmap.position.x = (Manager.width - recordBitmap.width) / 2;
+      recordBitmap.position.y = (Manager.height + this.recordsTitle.height) / 2;
+
+      this.addChild(recordBitmap);
+      return;
+    }
+
+    this.records.forEach((record, i) => {
+      const recordName = record.split(":")[0];
+      const recordPoints = record.split(":")[1];
+      const recordText = `${i + 1}. ${recordName}: ${recordPoints}`;
+
+      const recordBitmap = new BitmapText(recordText, {
+        fontName: "monotype",
+        fontSize: 20,
+        tint: 0xffffff,
+        align: "left",
+      });
+
+      recordBitmap.position.x = (Manager.width - recordBitmap.width) / 2;
+      recordBitmap.position.y =
+        (Manager.height + this.recordsTitle.height) / 2 + i * 20;
+
+      this.addChild(recordBitmap);
     });
-
-    const recordList = new BitmapText("blabla", {
-      fontName: "monotype",
-      fontSize: 50,
-      tint: 0xffffff,
-    });
-
-    recordList.position.x = (Manager.width - recordList.width) / 2;
-    recordList.position.y = (Manager.height + this.recordsTitle.height) / 2;
-
-    this.addChild(recordList);
-
-    return recordList;
   }
 
   private drawPlayButton(): [Graphics, BitmapText] {
@@ -72,8 +98,7 @@ export class RecordsScene extends Container implements IScene {
     playButton.y = Manager.height - 70;
 
     playButtonTitle.x = (playButton.width - playButtonTitle.width) / 2;
-    playButtonTitle.y =
-      (playButton.height - playButtonTitle.height) / 2;
+    playButtonTitle.y = (playButton.height - playButtonTitle.height) / 2;
 
     playButton.on("click", this.gameLoad);
     playButton.on("tap", this.gameLoad);
@@ -85,8 +110,16 @@ export class RecordsScene extends Container implements IScene {
     super();
 
     this.recordsTitle = this.drawPageTitle();
-    this.recordsList = this.drawRecordsList();
     this.drawPlayButton();
+
+    this.records = (localStorage.getItem("DiscoSnakeRecords") || "")
+      // @ts-ignore
+      .replaceAll('"', "")
+      .replaceAll("\\", "")
+      .split(";")
+      .filter(Boolean);
+
+    this.drawRecordsList();
   }
 
   private gameLoad(): void {
