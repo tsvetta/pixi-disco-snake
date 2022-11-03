@@ -371,17 +371,23 @@ export class GameScene extends Container implements IScene {
     this.drawRecordsButton();
     this.drawPointsCounter();
 
-    this.discoSnake = [{ snakeUnit: Sprite.from("Harry"), coords: "10,10" }];
-    this.discoSnake[0].snakeUnit.x =
-      CELL_SIZE * getCoordsFromSnake(this.bootyData.coords)[0]; // first position
-    this.discoSnake[0].snakeUnit.y =
-      CELL_SIZE * getCoordsFromSnake(this.bootyData.coords)[1];
-    this.discoSnake[0].snakeUnit.height = CELL_SIZE;
-    this.discoSnake[0].snakeUnit.width = CELL_SIZE;
-    this.discoSnake[0].snakeUnit.anchor.set(0.5);
-    this.discoSnake[0].snakeUnit.zIndex = 100;
+    this.discoSnake = [
+      { snakeUnit: Sprite.from("Harry"), coords: "10,10" },
+      { snakeUnit: Sprite.from("Harry"), coords: "10,11" },
+      { snakeUnit: Sprite.from("Harry"), coords: "10,12" },
+    ] as  SnakeData[];
+    this.discoSnake.forEach((_, i) => {
+      this.discoSnake[i].snakeUnit.x =
+        CELL_SIZE * getCoordsFromSnake(this.discoSnake[i].coords)[0]; // first position
+      this.discoSnake[i].snakeUnit.y =
+        CELL_SIZE * getCoordsFromSnake(this.discoSnake[i].coords)[1];
+      this.discoSnake[i].snakeUnit.height = CELL_SIZE;
+      this.discoSnake[i].snakeUnit.width = CELL_SIZE;
+      this.discoSnake[i].snakeUnit.anchor.set(0.5);
+      this.discoSnake[i].snakeUnit.zIndex = 100;
 
-    this.addChild(this.discoSnake[0].snakeUnit);
+      this.addChild(this.discoSnake[i].snakeUnit);
+    })
 
     Manager.stage.addChild(this.grid);
     Manager.changeSpeed(DEFAULT_SPEED);
