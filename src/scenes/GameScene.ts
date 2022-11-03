@@ -2,146 +2,11 @@ import { BitmapText, Container, Graphics, Sprite } from "pixi.js";
 import { Tween } from "tweedle.js";
 
 import { IScene, Manager } from "../Manager";
+import { GameOverScene } from "./GameOverScene";
+import { boundaries, CELL_SIZE, DEFAULT_SPEED, drawGrid, generateBootyData, getCoordsFromSnake, keyCodeMap } from "./helpers";
 import { RecordsScene } from "./RecordsScene";
+
 import { Direction, SnakeData } from "./snake-types";
-
-const CELL_SIZE = 30;
-
-type KeyCodes = {
-  top: string[];
-  right: string[];
-  bottom: string[];
-  left: string[];
-};
-
-const keyCodeMap: KeyCodes = {
-  top: ["ArrowUp", "KeyW"],
-  right: ["ArrowRight", "KeyD"],
-  bottom: ["ArrowDown", "KeyS"],
-  left: ["ArrowLeft", "KeyA"],
-};
-
-const DEFAULT_SPEED = 50;
-
-const boundaries = {
-  xCells: 0, // cells in x row
-  yCells: 0,
-  xpxStart: 0,
-  xpxEnd: 0,
-  ypxStart: 0,
-  ypxEnd: 0,
-  leftEdge: 0,
-  rightEdge: 0,
-  topEdge: 0,
-  bottomEdge: 0,
-  topY: 0,
-  bottomY: 0,
-  leftX: 0,
-  rightX: 0,
-};
-
-const drawGrid = (w: number, h: number) => {
-  const grid = new Graphics();
-  const topPadding = 4;
-  const sidesPadding = 1;
-
-  grid.x = CELL_SIZE;
-  grid.y = CELL_SIZE * topPadding;
-  grid.tint = 0x00ff00;
-
-  grid.beginFill();
-
-  const lineHeightLeftover = h % CELL_SIZE;
-  const actualLineHeight = h - lineHeightLeftover;
-  const horizontalLines = actualLineHeight / CELL_SIZE - topPadding;
-
-  const lineWidthLeftover = w % CELL_SIZE;
-  const actualLineWidth = w - lineWidthLeftover;
-  const verticalLines = actualLineWidth / CELL_SIZE - sidesPadding;
-
-  grid.lineStyle(1, 0x141414);
-
-  for (let i = 0; i < horizontalLines; i++) {
-    const nextLinePosition = 0 + i * CELL_SIZE;
-    const horizontalLineWidth =
-      actualLineWidth - CELL_SIZE * (sidesPadding * 2);
-
-    grid.drawRect(0, nextLinePosition, horizontalLineWidth, 1);
-  }
-
-  for (let i = 0; i < verticalLines; i++) {
-    const nextLinePosition = 0 + i * CELL_SIZE;
-    const verticalLineHeight =
-      actualLineHeight - CELL_SIZE * topPadding - sidesPadding - CELL_SIZE;
-
-    grid.drawRect(nextLinePosition, 0, 1, verticalLineHeight);
-  }
-
-  boundaries.xCells = verticalLines;
-  boundaries.yCells = horizontalLines - 1;
-  boundaries.xpxStart = grid.x;
-  boundaries.xpxEnd = boundaries.xCells * CELL_SIZE;
-  boundaries.ypxStart = grid.y;
-  boundaries.ypxEnd = boundaries.yCells * CELL_SIZE + grid.y;
-
-  boundaries.leftEdge = grid.x;
-  boundaries.rightEdge = Manager.width - CELL_SIZE * 2;
-  boundaries.topEdge = grid.y;
-  boundaries.bottomEdge = Manager.height - CELL_SIZE * 2;
-
-  boundaries.topY = CELL_SIZE * 4;
-  boundaries.rightX = Math.floor(boundaries.rightEdge / CELL_SIZE);
-  boundaries.leftX = CELL_SIZE * 2;
-  boundaries.bottomY = Math.floor(boundaries.bottomEdge / CELL_SIZE);
-
-  grid.endFill();
-
-  return grid;
-};
-
-const getCoordsFromSnake = (cell?: string): number[] => {
-  return cell ? cell.split(",").map(Number) : [10, 10];
-};
-
-const generateBootyData = (snake?: SnakeData[]) => {
-  // TODO Randomize first coords
-  const coords = !snake ? "10,10" : snake.map((s) => s.coords).join(";");
-  const ballNumber = Math.ceil(Math.random() * 10);
-  let rndXCell = CELL_SIZE;
-  let rndYCell = CELL_SIZE;
-
-  do {
-    rndXCell = Math.round(Math.random() * boundaries.xCells);
-    rndYCell = Math.round(Math.random() * boundaries.yCells);
-  } while (coords.includes(`${rndXCell},${rndYCell}`)); // no intersections with snake
-
-  const xCellpx = Math.min(
-    Math.max(rndXCell * CELL_SIZE, boundaries.leftEdge),
-    boundaries.rightEdge
-  );
-  const yCellpx = Math.min(
-    Math.max(rndYCell * CELL_SIZE, boundaries.topEdge),
-    boundaries.bottomEdge
-  );
-
-  // just because
-  const MAGIC_KIM_NUMBER = 9;
-  const sunriseParabellum =
-    Math.floor(Math.random() * 100) % MAGIC_KIM_NUMBER === 0;
-
-  const booty: Sprite = Sprite.from(`disco ball ${ballNumber}`);
-  booty.x = xCellpx;
-  booty.y = yCellpx;
-
-  return {
-    booty,
-    coords,
-    ballNumber,
-    xCellpx, // make same as coords?
-    yCellpx,
-    sunriseParabellum,
-  };
-};
 
 export class GameScene extends Container implements IScene {
   public direction: Direction = "top";
@@ -401,58 +266,15 @@ export class GameScene extends Container implements IScene {
     });
   }
 
-  private computeBootyPositionInSnake = () => {
-    const prevSnakePart = this.discoSnake[this.discoSnake.length - 2];
-    const discoBooty = this.discoSnake[this.discoSnake.length - 1].snakeUnit;
-
-    switch (this.direction) {
-      case "top": {
-        if (discoBooty.y === boundaries.bottomEdge) {
-          discoBooty.y = boundaries.bottomEdge + CELL_SIZE;
-        } else {
-          discoBooty.y = prevSnakePart.snakeUnit.y + CELL_SIZE;
-        }
-
-        break;
-      }
-      case "left": {
-        if (discoBooty.x === boundaries.rightEdge) {
-          discoBooty.x = boundaries.rightEdge + CELL_SIZE;
-        } else {
-          discoBooty.x = prevSnakePart.snakeUnit.x + CELL_SIZE;
-        }
-
-        break;
-      }
-      case "right": {
-        if (discoBooty.x === boundaries.leftEdge) {
-          discoBooty.x = boundaries.leftEdge - CELL_SIZE;
-        } else {
-          discoBooty.x = prevSnakePart.snakeUnit.x - CELL_SIZE;
-        }
-        break;
-      }
-      case "bottom": {
-        if (discoBooty.y === boundaries.topEdge) {
-          discoBooty.y = boundaries.bottomEdge - CELL_SIZE;
-        } else {
-          discoBooty.y = prevSnakePart.snakeUnit.y - CELL_SIZE;
-        }
-
-        break;
-      }
-    }
-  };
-
   private checkCollision = () => {
-    const isCollided =
+    const isCollidedWithBooty =
       this.discoSnake.filter(
         (d) =>
           d.snakeUnit.x === this.bootyData.xCellpx &&
           d.snakeUnit.y === this.bootyData.yCellpx
       ).length !== 0;
 
-    if (isCollided) {
+    if (isCollidedWithBooty) {
       // luck!
       if (this.bootyData.sunriseParabellum) {
         this.points += 5;
@@ -474,6 +296,15 @@ export class GameScene extends Container implements IScene {
       this.discoSnake[0].snakeUnit.emit("grow");
 
       this.createNewBooty();
+      return;
+    }
+
+    const allUnitsCoords = this.discoSnake.map((s) => s.coords);
+    const headCoords = allUnitsCoords.filter(c => c === this.discoSnake[0].coords);
+    const isCollidedWithTail = headCoords.length > 1;
+
+    if (isCollidedWithTail) {
+      this.gameOver();
     }
   };
 
@@ -537,9 +368,8 @@ export class GameScene extends Container implements IScene {
     Manager.changeScene(new RecordsScene());
   };
 
-  // TODO
-  // private gameOver = (): void => {
-  //   this.discoBooty.destroy();
-  //   Manager.changeScene(new GameOverScene());
-  // };
+  private gameOver = (): void => {
+    this.discoBooty.destroy();
+    Manager.changeScene(new GameOverScene());
+  };
 }
