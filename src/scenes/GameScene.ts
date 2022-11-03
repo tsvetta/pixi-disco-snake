@@ -24,7 +24,7 @@ const keyCodeMap: KeyCodes = {
 const DEFAULT_SPEED = 50;
 
 const boundaries = {
-  xCells: 0, // cell in x row
+  xCells: 0, // cells in x row
   yCells: 0,
   xpxStart: 0,
   xpxEnd: 0,
@@ -94,7 +94,7 @@ const getCoordsFromSnake = (cell: string): number[] => {
   return cell.split(",").map(Number);
 };
 
-const generateBooty = () => {
+const generateBootyData = () => {
   const ballNumber = Math.ceil(Math.random() * 10);
   let rndXCell = CELL_SIZE;
   let rndYCell = CELL_SIZE;
@@ -121,6 +121,8 @@ const generateBooty = () => {
     Math.floor(Math.random() * 100) % MAGIC_KIM_NUMBER === 0;
 
   const booty: Sprite = Sprite.from(`disco ball ${ballNumber}`);
+  booty.x = xCellpx;
+  booty.y = yCellpx;
 
   return {
     booty,
@@ -134,8 +136,8 @@ const generateBooty = () => {
 
 export class GameScene extends Container implements IScene {
   public direction: Direction = "right";
-  private bootyData = generateBooty();
-  private disco: Sprite[] = [this.bootyData.booty];
+  private bootyData = generateBootyData();
+  private discoSnake: Sprite[] = [this.bootyData.booty];
   // @ts-ignore
   private animatedBooty: Tween<ObservablePoint<any>>;
 
@@ -151,43 +153,61 @@ export class GameScene extends Container implements IScene {
     tint: 0xffffff,
   });
 
-  private move(direction: Direction) {
+  private move = (direction: Direction) => {
+    Manager.changeSpeedDelta(0); // to prevent jumping after pressing the key
+    // Manager.changeSpeed(60); // TODO: make it faster
+
     switch (direction) {
       case "top": {
-        for (let i = 0; i < this.disco.length; i++) {
-          this.disco[i].y -= this.discoJumpLength;
+        this.direction = "top";
 
-          if (this.disco[i].y < boundaries.topEdge) {
-            this.disco[i].y = boundaries.ypxEnd;
-          }
+        this.discoSnake[0].y -= this.discoJumpLength;
+
+        if (this.discoSnake[0].y < boundaries.topEdge) {
+          this.discoSnake[0].y = boundaries.ypxEnd;
         }
+
+        // for (let i = 0; i < this.discoSnake.length; i++) {
+        //   this.discoSnake[i].y -= this.discoJumpLength;
+
+        //   console.log('moved part', this.discoSnake[i].x, this.discoSnake[i].y)
+        //   // const posX = CELL_SIZE * getCoordsFromSnake(this.discoSnake[i].x)
+        //   // const posY = CELL_SIZE * getCoordsFromSnake(this.discoSnake[i].y)
+
+        //   if (this.discoSnake[i].y < boundaries.topEdge) {
+        //     this.discoSnake[i].y = boundaries.ypxEnd;
+        //   }
+        // }
         break;
       }
 
       case "right": {
-        this.disco[0].x += this.discoJumpLength;
+        this.direction = "right";
+        this.discoSnake[0].x += this.discoJumpLength;
 
-        if (this.disco[0].x > boundaries.rightEdge) {
-          this.disco[0].x = boundaries.xpxStart;
+        if (this.discoSnake[0].x > boundaries.rightEdge) {
+          this.discoSnake[0].x = boundaries.xpxStart;
         }
 
         break;
       }
 
       case "left": {
-        this.disco[0].x -= this.discoJumpLength;
+        this.direction = "left";
+        this.discoSnake[0].x -= this.discoJumpLength;
 
-        if (this.disco[0].x < boundaries.leftEdge) {
-          this.disco[0].x = boundaries.xpxEnd;
+        if (this.discoSnake[0].x < boundaries.leftEdge) {
+          this.discoSnake[0].x = boundaries.xpxEnd;
         }
         break;
       }
 
       case "bottom": {
-        this.disco[0].y += this.discoJumpLength;
+        this.direction = "bottom";
+        this.discoSnake[0].y += this.discoJumpLength;
 
-        if (this.disco[0].y > boundaries.bottomEdge) {
-          this.disco[0].y = boundaries.ypxStart;
+        if (this.discoSnake[0].y > boundaries.bottomEdge) {
+          this.discoSnake[0].y = boundaries.ypxStart;
         }
 
         break;
@@ -195,9 +215,8 @@ export class GameScene extends Container implements IScene {
     }
   }
 
-  private refreshBooty() {
-    // this.discoBooty.destroy();
-    this.bootyData = generateBooty();
+  private createNewBooty = () => {
+    this.bootyData = generateBootyData();
     this.discoBooty = this.bootyData.sunriseParabellum
       ? Sprite.from("Kim")
       : Sprite.from(`disco ball ${this.bootyData.ballNumber}`);
@@ -217,7 +236,7 @@ export class GameScene extends Container implements IScene {
       .start();
   }
 
-  private drawRecordsButton() {
+  private drawRecordsButton = () => {
     const recordsButton = new Graphics();
     const recordsButtonTitle = new BitmapText("RECORDS", {
       fontName: "monotype",
@@ -247,7 +266,7 @@ export class GameScene extends Container implements IScene {
     recordsButton.on("tap", this.goToRecords);
   }
 
-  private drawPointsCounter() {
+  private drawPointsCounter = () => {
     const pointsText = new BitmapText("POINTS:", {
       fontName: "monotype",
       fontSize: 30,
@@ -270,31 +289,35 @@ export class GameScene extends Container implements IScene {
     this.drawRecordsButton();
     this.drawPointsCounter();
 
-    this.disco = [Sprite.from("Harry")];
-    this.disco[0].x =
+    this.discoSnake = [Sprite.from("Harry")];
+    this.discoSnake[0].x =
       CELL_SIZE * getCoordsFromSnake(this.bootyData.coords[0])[0]; // first position
-    this.disco[0].y =
+    this.discoSnake[0].y =
       CELL_SIZE * getCoordsFromSnake(this.bootyData.coords[0])[1];
-    this.disco[0].height = CELL_SIZE;
-    this.disco[0].width = CELL_SIZE;
-    this.disco[0].anchor.set(0.5);
+    this.discoSnake[0].height = CELL_SIZE;
+    this.discoSnake[0].width = CELL_SIZE;
+    this.discoSnake[0].anchor.set(0.5);
 
-    this.addChild(this.disco[0]);
+    this.addChild(this.discoSnake[0]);
 
     Manager.stage.addChild(this.grid);
     Manager.changeSpeed(DEFAULT_SPEED);
 
     document.addEventListener("keydown", this.changeDirection);
 
-    this.refreshBooty();
+    this.createNewBooty();
 
-    this.disco[0].addListener("grow", () => {
+    this.discoSnake[0].addListener("grow", () => {
+      this.computeBootyPositionInSnake();
+      // this.move(this.direction)
       this.addChild(this.discoBooty);
     });
   }
 
   private computeBootyPositionInSnake = () => {
-    const prevSnakePart = this.disco[this.disco.length - 2];
+    const prevSnakePart = this.discoSnake[this.discoSnake.length - 2];
+
+    console.log('old booty position', this.discoBooty.x, this.discoBooty.y);
 
     switch (this.direction) {
       case "top":
@@ -310,15 +333,18 @@ export class GameScene extends Container implements IScene {
         this.discoBooty.y = prevSnakePart.y - CELL_SIZE;
         break;
     }
+    console.log('tail position', prevSnakePart.x, prevSnakePart.y);
+    console.log('new booty position', this.discoBooty.x, this.discoBooty.y);
   };
 
   private checkCollision = () => {
     const isCollided =
-      this.disco.filter(
+      this.discoSnake.filter(
         (d) => d.x === this.bootyData.xCellpx && d.y === this.bootyData.yCellpx
       ).length !== 0;
 
     if (isCollided) {
+      // luck!
       if (this.bootyData.sunriseParabellum) {
         this.points += 5;
       } else {
@@ -327,44 +353,35 @@ export class GameScene extends Container implements IScene {
 
       this.pointsCounter.text = `${this.points}`;
 
-      this.disco.push(this.bootyData.booty);
-
+      // add new poart to the snake's tail, not animated
       this.animatedBooty.end();
+      this.discoSnake.push(this.bootyData.booty);
 
-      this.computeBootyPositionInSnake();
+      // place new part near the end of the existing tail
+      this.discoSnake[0].emit("grow");
 
-      this.disco[0].emit("grow");
-
-      this.refreshBooty();
+      this.createNewBooty();
     }
   };
 
   private changeDirection = (e: KeyboardEvent): void => {
     switch (true) {
       case keyCodeMap.top.includes(e.code): {
-        this.direction = "top"; // нужно ли?
-        Manager.changeSpeedDelta(0);
         this.move("top");
         break;
       }
 
       case keyCodeMap.right.includes(e.code): {
-        this.direction = "right";
-        Manager.changeSpeedDelta(0);
         this.move("right");
         break;
       }
 
       case keyCodeMap.bottom.includes(e.code): {
-        this.direction = "bottom";
-        Manager.changeSpeedDelta(0);
         this.move("bottom");
         break;
       }
 
       case keyCodeMap.left.includes(e.code): {
-        this.direction = "left";
-        Manager.changeSpeedDelta(0);
         this.move("left");
         break;
       }
@@ -374,7 +391,7 @@ export class GameScene extends Container implements IScene {
   };
 
   // Lets disco!
-  public update(): void {
+  public update = (): void => {
     switch (this.direction) {
       case "top":
         this.move("top");
@@ -395,7 +412,8 @@ export class GameScene extends Container implements IScene {
     this.checkCollision();
   }
 
-  public resize(w: number, h: number): void {
+  // TODO: bugs?
+  public resize = (w: number, h: number): void => {
     this.grid.destroy();
     this.grid = drawGrid(w, h);
     Manager.stage.addChild(this.grid);
@@ -405,4 +423,10 @@ export class GameScene extends Container implements IScene {
     this.discoBooty.destroy();
     Manager.changeScene(new RecordsScene());
   };
+
+  // TODO
+  // private gameOver = (): void => {
+  //   this.discoBooty.destroy();
+  //   Manager.changeScene(new GameOverScene());
+  // };
 }
