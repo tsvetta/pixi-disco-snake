@@ -154,7 +154,6 @@ export class GameScene extends Container implements IScene {
     `disco ball ${this.bootyData.ballNumber}`
   );
   private grid: Graphics = drawGrid(Manager.width, Manager.height);
-  private discoJumpLength: number = CELL_SIZE;
   private points: number = 0;
   private pointsCounter = new BitmapText(`${this.points}`, {
     fontName: "monotype",
@@ -185,7 +184,8 @@ export class GameScene extends Container implements IScene {
 
           // if first unit
           if (i === 0) {
-            this.discoSnake[i].snakeUnit.y = this.discoSnake[i].snakeUnit.y - CELL_SIZE;
+            this.discoSnake[i].snakeUnit.y =
+              this.discoSnake[i].snakeUnit.y - CELL_SIZE;
             this.discoSnake[i].coords = `${oldCoords[0]},${oldCoords[1] - 1}`;
           } else {
             this.discoSnake[i].snakeUnit.x = this.discoSnake[i - 1].snakeUnit.x;
@@ -215,7 +215,8 @@ export class GameScene extends Container implements IScene {
 
           // if first unit
           if (i === 0) {
-            this.discoSnake[i].snakeUnit.x = this.discoSnake[i].snakeUnit.x + CELL_SIZE;
+            this.discoSnake[i].snakeUnit.x =
+              this.discoSnake[i].snakeUnit.x + CELL_SIZE;
             this.discoSnake[i].coords = `${oldCoords[0] + 1},${oldCoords[1]}`;
           } else {
             this.discoSnake[i].snakeUnit.x = this.discoSnake[i - 1].snakeUnit.x;
@@ -245,7 +246,8 @@ export class GameScene extends Container implements IScene {
 
           // if first unit
           if (i === 0) {
-            this.discoSnake[i].snakeUnit.x = this.discoSnake[i].snakeUnit.x - CELL_SIZE;
+            this.discoSnake[i].snakeUnit.x =
+              this.discoSnake[i].snakeUnit.x - CELL_SIZE;
             this.discoSnake[i].coords = `${oldCoords[0] - 1},${oldCoords[1]}`;
           } else {
             this.discoSnake[i].snakeUnit.x = this.discoSnake[i - 1].snakeUnit.x;
@@ -275,7 +277,8 @@ export class GameScene extends Container implements IScene {
 
           // if first unit
           if (i === 0) {
-            this.discoSnake[i].snakeUnit.y = this.discoSnake[i].snakeUnit.y + CELL_SIZE;
+            this.discoSnake[i].snakeUnit.y =
+              this.discoSnake[i].snakeUnit.y + CELL_SIZE;
             this.discoSnake[i].coords = `${oldCoords[0]},${oldCoords[1] + 1}`;
           } else {
             this.discoSnake[i].snakeUnit.x = this.discoSnake[i - 1].snakeUnit.x;
