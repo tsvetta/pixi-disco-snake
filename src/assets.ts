@@ -11,4 +11,6 @@ export const discoAssets = [
   { name: "disco ball 8", url: "disco/discoball_8.png" },
   { name: "disco ball 9", url: "disco/discoball_9.png" },
   { name: "disco ball 10", url: "disco/discoball_10.png" },
+  { name: "disco ball 11", url: "disco/discoball_11.png" },
+  { name: "disco ball 12", url: "disco/discoball_12.png" },
 ]
