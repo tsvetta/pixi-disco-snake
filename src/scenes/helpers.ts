@@ -1,6 +1,13 @@
 import { Graphics, Sprite } from "pixi.js";
+import { GlowFilter } from "@pixi/filter-glow";
 import { Manager } from "../Manager";
 import { KeyCodes, SnakeData } from "./snake-types";
+
+export const bootyGlowFilter = new GlowFilter({
+  outerStrength: 1.18,
+  innerStrength: 0,
+  quality: 1,
+});
 
 export const boundaries = {
   xCells: 0, // cells in x row
@@ -147,6 +154,13 @@ export const generateBootyData = (snake?: SnakeData[]) => {
 
   const bootyNumber = Math.floor(Math.random() * bootySprites.length);
   const booty: Sprite = bootySprites[bootyNumber].sprite;
+
+  // only disco balls are glowing
+  if (bootyNumber < 12) {
+    // @ts-ignore
+    booty.filters = [bootyGlowFilter];
+  }
+
   booty.x = xCellpx;
   booty.y = yCellpx;
 
@@ -154,7 +168,9 @@ export const generateBootyData = (snake?: SnakeData[]) => {
 
   return {
     booty: sunriseParabellum ? bootyKim.sprite : booty,
-    points: sunriseParabellum ? bootyKim.points : bootySprites[bootyNumber].points,
+    points: sunriseParabellum
+      ? bootyKim.points
+      : bootySprites[bootyNumber].points,
     coords,
     xCellpx, // make same as coords?
     yCellpx,

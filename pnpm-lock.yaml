@@ -2,6 +2,8 @@ lockfileVersion: 5.4
 
 specifiers:
   '@pixi/core': ^6.5.8
+  '@pixi/filter-glow': '4'
+  '@pixi/filter-godray': '4'
   '@pixi/sound': '4'
   copy-webpack-plugin: ^10.2.4
   html-webpack-plugin: ^5.5.0
@@ -19,6 +21,8 @@ specifiers:
 
 dependencies:
   '@pixi/core': 6.5.8_plvhmba5imzl5ocyxvgulib4y4
+  '@pixi/filter-glow': 4.2.0_qpsgapkyruy6thft2bz6yo352m
+  '@pixi/filter-godray': 4.2.0_wcdtcmstxxaqepcbhokcgvyg3q
   '@pixi/sound': 4.3.1_qxrgdxzwros3ci4lifwneo52ym
   pixi-particles: 4.3.1_pixi.js@6.5.8
   pixi.js: 6.5.8
@@ -285,6 +289,28 @@ packages:
       '@pixi/core': 6.5.8
     dependencies:
       '@pixi/core': 6.5.8_plvhmba5imzl5ocyxvgulib4y4
+    dev: false
+
+  /@pixi/filter-glow/4.2.0_qpsgapkyruy6thft2bz6yo352m:
+    resolution: {integrity: sha512-HVyursUy3artw/tDjbLOdXzSufz/i6bYQwavjkiN2Yswzqs0GwD8hscwbHMqMO4ny+D3q6DfsmlwiQe/kY5ymQ==}
+    peerDependencies:
+      '@pixi/core': ^6.0.0
+      '@pixi/utils': ^6.0.0
+    dependencies:
+      '@pixi/core': 6.5.8_plvhmba5imzl5ocyxvgulib4y4
+      '@pixi/utils': 6.5.8_qeualvkmgwo4nudflomrx2dohe
+    dev: false
+
+  /@pixi/filter-godray/4.2.0_wcdtcmstxxaqepcbhokcgvyg3q:
+    resolution: {integrity: sha512-U+eifhkwzo9PhgMRbH68YADaqTnWmyulCDM8IUhjxmGs2CKRE4t7X4rwAY4M1Qom5AcOdebO0fhDh8G02lBjfg==}
+    peerDependencies:
+      '@pixi/constants': ^6.0.0
+      '@pixi/core': ^6.0.0
+      '@pixi/math': ^6.0.0
+    dependencies:
+      '@pixi/constants': 6.5.8
+      '@pixi/core': 6.5.8_plvhmba5imzl5ocyxvgulib4y4
+      '@pixi/math': 6.5.8
     dev: false
 
   /@pixi/filter-noise/6.5.8_@pixi+core@6.5.8:

@@ -4,6 +4,7 @@ import { Tween } from "tweedle.js";
 import { IScene, Manager } from "../Manager";
 import { GameOverScene } from "./GameOverScene";
 import {
+  bootyGlowFilter,
   boundaries,
   CELL_SIZE,
   DEFAULT_SPEED,
@@ -367,15 +368,12 @@ export class GameScene extends Container implements IScene {
   private gameOver = (): void => {
     this.discoBooty.destroy();
 
-    const recordsLS = localStorage.getItem('DiscoSnakeRecords') || '';
+    const recordsLS = localStorage.getItem("DiscoSnakeRecords") || "";
     const newRecords = recordsLS + `;Tanya:${this.points}`;
 
-    localStorage.removeItem('DiscoSnakeRecords');
+    localStorage.removeItem("DiscoSnakeRecords");
 
-    localStorage.setItem(
-      "DiscoSnakeRecords",
-      JSON.stringify(newRecords),
-    );
+    localStorage.setItem("DiscoSnakeRecords", JSON.stringify(newRecords));
 
     Manager.changeScene(new GameOverScene());
   };

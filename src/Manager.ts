@@ -1,6 +1,7 @@
 import { Group as TweedleGroup } from "tweedle.js";
+// import { GodrayFilter } from '@pixi/filter-godray';
 
-import { Application, Container, DisplayObject } from "pixi.js";
+import { Application, Container, DisplayObject, filters } from "pixi.js";
 
 export class Manager {
   private static app: Application;
@@ -27,12 +28,24 @@ export class Manager {
       view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
       resolution: window.devicePixelRatio || 1,
       autoDensity: true,
-      backgroundColor: background,
+      // backgroundColor: background,
+      // backgroundAlpha: 0,
       width: this.width,
       height: this.height,
     });
 
     Manager.stage = Manager.app.stage;
+
+    // @ts-ignore
+    // Manager.stage.filters = [new GodrayFilter({
+    //   angle: 30,
+    //   gain: 0.695,
+    //   lacunarity: 2.01,
+    //   parallel: false,
+    //   time: 0.109,
+    //   center: [0, 0],
+    //   alpha: 1,
+    // })];
 
     Manager.app.ticker.add(Manager.update);
 
