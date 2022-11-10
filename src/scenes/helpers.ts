@@ -88,7 +88,7 @@ export const drawGrid = (w: number, h: number) => {
 
   boundaries.topY = CELL_SIZE * 4;
   boundaries.rightX = Math.floor(boundaries.rightEdge / CELL_SIZE);
-  boundaries.leftX = CELL_SIZE * 2;
+  boundaries.leftX = 1;
   boundaries.bottomY = Math.floor(boundaries.bottomEdge / CELL_SIZE);
 
   grid.endFill();
