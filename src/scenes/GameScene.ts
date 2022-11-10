@@ -26,20 +26,27 @@ export class GameScene extends Container implements IScene {
 
   private discoBooty: Sprite = this.bootyData.booty;
   private grid: Graphics = drawGrid(Manager.width, Manager.height);
+  private level: number = 0;
   private points: number = 0;
+
   private pointsCounter = new BitmapText(`${this.points}`, {
+    fontName: "monotype",
+    fontSize: 30,
+    tint: 0xffffff,
+  });
+  private levelsCounter = new BitmapText(`${this.level}`, {
     fontName: "monotype",
     fontSize: 30,
     tint: 0xffffff,
   });
 
   private move = (direction: Direction) => {
-    Manager.changeSpeedDelta(0); // to prevent jumping after pressing the key
-    // Manager.changeSpeed(60); // TODO: make it faster
-
     switch (direction) {
       case "top": {
         if (this.direction === "bottom") break; // can't go backwards
+
+        Manager.changeSpeedDelta(0); // to prevent jumping after pressing the key
+
         this.direction = "top";
 
         for (let i = this.discoSnake.length - 1; i >= 0; i--) {
@@ -71,13 +78,19 @@ export class GameScene extends Container implements IScene {
 
       case "right": {
         if (this.direction === "left") break; // can't go backwards
+
+        Manager.changeSpeedDelta(0); // to prevent jumping after pressing the key
+
         this.direction = "right";
 
         for (let i = this.discoSnake.length - 1; i >= 0; i--) {
           const oldCoords = getCoordsFromSnake(this.discoSnake[i].coords);
 
           // if first unit on edge
-          if (i === 0 && this.discoSnake[i].snakeUnit.x > boundaries.rightEdge) {
+          if (
+            i === 0 &&
+            this.discoSnake[i].snakeUnit.x > boundaries.rightEdge
+          ) {
             this.discoSnake[i].snakeUnit.x = CELL_SIZE;
 
             const newX = boundaries.leftX;
@@ -102,13 +115,19 @@ export class GameScene extends Container implements IScene {
 
       case "left": {
         if (this.direction === "right") break; // can't go backwards
+
+        Manager.changeSpeedDelta(0); // to prevent jumping after pressing the key
+
         this.direction = "left";
 
         for (let i = this.discoSnake.length - 1; i >= 0; i--) {
           const oldCoords = getCoordsFromSnake(this.discoSnake[i].coords);
 
           // if first unit on edge
-          if (i === 0 && this.discoSnake[i].snakeUnit.x <= boundaries.leftEdge) {
+          if (
+            i === 0 &&
+            this.discoSnake[i].snakeUnit.x <= boundaries.leftEdge
+          ) {
             this.discoSnake[i].snakeUnit.x = boundaries.xpxEnd;
 
             const newX = boundaries.rightX;
@@ -133,13 +152,19 @@ export class GameScene extends Container implements IScene {
 
       case "bottom": {
         if (this.direction === "top") break; // can't go backwards
+
+        Manager.changeSpeedDelta(0); // to prevent jumping after pressing the key
+
         this.direction = "bottom";
 
         for (let i = this.discoSnake.length - 1; i >= 0; i--) {
           const oldCoords = getCoordsFromSnake(this.discoSnake[i].coords);
 
           // if first unit on edge
-          if (i === 0 && this.discoSnake[i].snakeUnit.y > boundaries.bottomEdge) {
+          if (
+            i === 0 &&
+            this.discoSnake[i].snakeUnit.y > boundaries.bottomEdge
+          ) {
             this.discoSnake[i].snakeUnit.y = CELL_SIZE * 4;
 
             const newY = boundaries.topY;
@@ -231,11 +256,29 @@ export class GameScene extends Container implements IScene {
     this.pointsCounter.y = CELL_SIZE;
   };
 
+  private drawLevelCounter = () => {
+    const levelsText = new BitmapText("LEVEL:", {
+      fontName: "monotype",
+      fontSize: 30,
+      tint: 0x00ff00,
+    });
+
+    this.addChild(levelsText);
+    this.addChild(this.levelsCounter);
+
+    levelsText.x = CELL_SIZE + 500;
+    levelsText.y = CELL_SIZE;
+
+    this.levelsCounter.x = levelsText.width + 550;
+    this.levelsCounter.y = CELL_SIZE;
+  };
+
   constructor() {
     super();
 
     this.drawRecordsButton();
     this.drawPointsCounter();
+    this.drawLevelCounter();
 
     this.discoSnake = [
       { snakeUnit: Sprite.from("Harry"), coords: "10,10" },
@@ -269,26 +312,32 @@ export class GameScene extends Container implements IScene {
 
   private checkCollision = () => {
     const isCollidedWithBooty =
-      this.discoSnake.filter(
-        (d) =>
-          d.snakeUnit.x === this.bootyData.xCellpx &&
-          d.snakeUnit.y === this.bootyData.yCellpx
-      ).length !== 0;
+      this.discoSnake[0].snakeUnit.x === this.bootyData.xCellpx &&
+      this.discoSnake[0].snakeUnit.y === this.bootyData.yCellpx;
 
     if (isCollidedWithBooty) {
+
       this.points += this.bootyData.points;
       this.pointsCounter.text = `${this.points}`;
 
+      // every 2 snake units speed becomes faster, level increase
+      if (this.discoSnake.length % 2 === 0) {
+        this.level++;
+        this.levelsCounter.text = `${this.level}`;
+        Manager.changeSpeed(Manager.speed - 2);
+      }
+
       // add new poart to the snake's tail, not animated
-      this.animatedBooty.end();
+      this.animatedBooty.end(); // TODO: BUG stops in the middle of animation
 
       this.discoSnake.push({
         snakeUnit: this.discoBooty,
         coords: this.bootyData.coords,
       });
 
-      // place new part near the end of the existing tail
+      // place new part at the end of the existing tail
       this.discoSnake[0].snakeUnit.emit("grow");
+      this.move(this.direction);
 
       this.createNewBooty();
       return;

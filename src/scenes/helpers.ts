@@ -35,7 +35,7 @@ export const keyCodeMap: KeyCodes = {
   left: ["ArrowLeft", "KeyA"],
 };
 
-export const DEFAULT_SPEED = 50;
+export const DEFAULT_SPEED = 50; // less = faster
 
 export const drawGrid = (w: number, h: number) => {
   const grid = new Graphics();

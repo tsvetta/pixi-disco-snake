@@ -69,9 +69,9 @@ export class Manager {
     Manager.app.stage.addChild(Manager.currentScene);
   }
 
-  private static maxDelta = 50;
-  public static changeSpeed(maxDelta: number): void {
-    Manager.maxDelta = maxDelta;
+  public static speed = 50;
+  public static changeSpeed(speed: number): void {
+    Manager.speed = speed;
   }
 
   private static currentDelta = 0;
@@ -84,7 +84,7 @@ export class Manager {
 
     Manager.currentDelta += delta;
 
-    if (Manager.currentDelta >= Manager.maxDelta) {
+    if (Manager.currentDelta >= Manager.speed) {
       Manager.currentDelta = 5; // нужен запас, чтобы не перескакивало при нажатии клавиатуры???
       if (Manager.currentScene) {
         Manager.currentScene.update(delta); // to move ball
@@ -96,5 +96,5 @@ export class Manager {
 export interface IScene extends DisplayObject {
   update(framesPassed: number): void;
   resize(screenWidth: number, screenHeight: number): void;
-  maxDelta?: number;
+  speed?: number;
 }

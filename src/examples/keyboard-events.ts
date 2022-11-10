@@ -44,25 +44,25 @@ export const keyboardEventsFn = (app: Application) => {
     switch (true) {
       // @ts-ignore
       case keyCodeMap.top.includes(e.code): {
-        star.y = star.y - 10;
+        star.y = star.y - 100;
         break;
       }
 
       // @ts-ignore
       case keyCodeMap.right.includes(e.code): {
-        star.x = star.x + 10;
+        star.x = star.x + 100;
         break;
       }
 
       // @ts-ignore
       case keyCodeMap.bottom.includes(e.code): {
-        star.y = star.y + 10;
+        star.y = star.y + 100;
         break;
       }
 
       // @ts-ignore
       case keyCodeMap.left.includes(e.code): {
-        star.x = star.x - 10;
+        star.x = star.x - 100;
         break;
       }
     }
