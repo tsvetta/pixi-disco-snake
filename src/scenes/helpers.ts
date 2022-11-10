@@ -146,7 +146,6 @@ export const generateBootyData = (snake?: SnakeData[]) => {
     Math.floor(Math.random() * 100) % MAGIC_KIM_NUMBER === 0;
 
   const bootyNumber = Math.floor(Math.random() * bootySprites.length);
-  console.log("bootyNumber", bootyNumber);
   const booty: Sprite = bootySprites[bootyNumber].sprite;
   booty.x = xCellpx;
   booty.y = yCellpx;
