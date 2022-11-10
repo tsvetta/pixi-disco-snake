@@ -7,6 +7,7 @@
 		content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover" />
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<link rel="icon" type="image/x-icon" href="favicon.ico">
+	<link rel="stylesheet" href="aurora.css" />
 
 	<style>
 		html,
@@ -17,7 +18,6 @@
 		}
 
 		#pixi-content {
-			background: #000000;
 			text-align: center;
 		}
 	</style>
@@ -26,7 +26,48 @@
 
 <body>
 	<noscript>Please enable JavaScript in your web browser to view this page.</noscript>
-	<div id="pixi-content"><canvas id="pixi-canvas" /></div>
+
+	<div id="pixi-content">
+		<canvas id="pixi-canvas" />
+	</div>
+
+	<footer>
+		<div id='red'></div>
+		<div id='orange'></div>
+		<div id='yellow'></div>
+		<div id='green'></div>
+		<div id='blue'></div>
+		<div id='indigo'></div>
+		<div id='violet'></div>
+	</footer>
+
+
+	<script>
+		const lights = [
+			document.getElementById('red'),
+			document.getElementById('orange'),
+			document.getElementById('yellow'),
+			document.getElementById('green'),
+			document.getElementById('blue'),
+			document.getElementById('indigo'),
+			document.getElementById('violet'),
+		]
+
+		for (let i = 0; i < lights.length; i++) {
+			lights[i].animate([
+				// keyframes
+				{ opacity: '0' },
+				{ opacity: '0.5' }
+			], {
+				// timing options
+				duration: 1000 + Math.random() * 1000,
+				iterations: Infinity,
+					direction: "alternate",
+					iterationStart: Math.random() * 1000,
+			});
+		}
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </body>
 
 </html>

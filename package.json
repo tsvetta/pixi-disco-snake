@@ -8,6 +8,8 @@
   },
   "dependencies": {
     "@pixi/core": "^6.5.8",
+    "@pixi/filter-glow": "4",
+    "@pixi/filter-godray": "4",
     "@pixi/sound": "4",
     "pixi-particles": "^4.3.1",
     "pixi.js": "^6.5.8",

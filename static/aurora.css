@@ -1,0 +1,45 @@
+footer {
+  pointer-events: none;
+  /* z-index: -1; */
+  position: absolute;
+  bottom: 0; left: 0; right: 0; top: 0;
+}
+
+div#red,
+div#orange,
+div#yellow,
+div#green,
+div#blue,
+div#indigo,
+div#violet {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+}
+
+#red {
+  background: radial-gradient(circle at 0% 150%, rgba(255,0,0,0.5) 0%, rgba(0,0,0,0) 50%);
+}
+
+#orange {
+  background: radial-gradient(circle at 40% 150%, rgba(255,125,0,0.5) 0%, rgba(0,0,0,0) 50%);
+}
+
+#yellow {
+  background: radial-gradient(circle at 80% 150%, rgba(255,255,0,0.5) 0%, rgba(0,0,0,0) 50%);
+}
+
+#green {
+  background: radial-gradient(circle at 0% 150%, rgba(0,255,0,0.5) 0%, rgba(0,0,0,0) 50%);
+}
+
+#blue {
+  background: radial-gradient(circle at 40% 150%, rgba(0,0,255,0.5) 0%, rgba(0,0,0,0) 50%);
+}
+
+#indigo {
+  background: radial-gradient(circle at 80% 150%, rgba(0,125,255,0.5) 0%, rgba(0,0,0,0) 50%);
+}
+
+#violet {
+  background: radial-gradient(circle at 80% 150%, rgba(255,0,125,0.5) 0%, rgba(0,0,0,0) 50%);
+}

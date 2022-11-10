@@ -1,6 +1,7 @@
 import { Group as TweedleGroup } from "tweedle.js";
+// import { GodrayFilter } from '@pixi/filter-godray';
 
-import { Application, Container, DisplayObject } from "pixi.js";
+import { Application, Container, DisplayObject, filters } from "pixi.js";
 
 export class Manager {
   private static app: Application;
@@ -27,12 +28,24 @@ export class Manager {
       view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
       resolution: window.devicePixelRatio || 1,
       autoDensity: true,
-      backgroundColor: background,
+      // backgroundColor: background,
+      // backgroundAlpha: 0,
       width: this.width,
       height: this.height,
     });
 
     Manager.stage = Manager.app.stage;
+
+    // @ts-ignore
+    // Manager.stage.filters = [new GodrayFilter({
+    //   angle: 30,
+    //   gain: 0.695,
+    //   lacunarity: 2.01,
+    //   parallel: false,
+    //   time: 0.109,
+    //   center: [0, 0],
+    //   alpha: 1,
+    // })];
 
     Manager.app.ticker.add(Manager.update);
 
@@ -56,9 +69,9 @@ export class Manager {
     Manager.app.stage.addChild(Manager.currentScene);
   }
 
-  private static maxDelta = 50;
-  public static changeSpeed(maxDelta: number): void {
-    Manager.maxDelta = maxDelta;
+  public static speed = 50;
+  public static changeSpeed(speed: number): void {
+    Manager.speed = speed;
   }
 
   private static currentDelta = 0;
@@ -71,7 +84,7 @@ export class Manager {
 
     Manager.currentDelta += delta;
 
-    if (Manager.currentDelta >= Manager.maxDelta) {
+    if (Manager.currentDelta >= Manager.speed) {
       Manager.currentDelta = 5; // нужен запас, чтобы не перескакивало при нажатии клавиатуры???
       if (Manager.currentScene) {
         Manager.currentScene.update(delta); // to move ball
@@ -83,5 +96,5 @@ export class Manager {
 export interface IScene extends DisplayObject {
   update(framesPassed: number): void;
   resize(screenWidth: number, screenHeight: number): void;
-  maxDelta?: number;
+  speed?: number;
 }
