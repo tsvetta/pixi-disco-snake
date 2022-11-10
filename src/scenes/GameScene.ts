@@ -45,8 +45,8 @@ export class GameScene extends Container implements IScene {
         for (let i = this.discoSnake.length - 1; i >= 0; i--) {
           const oldCoords = getCoordsFromSnake(this.discoSnake[i].coords);
 
-          // if unit on edge
-          if (this.discoSnake[i].snakeUnit.y <= boundaries.topEdge) {
+          // if first unit on edge
+          if (i === 0 && this.discoSnake[i].snakeUnit.y <= boundaries.topEdge) {
             this.discoSnake[i].snakeUnit.y = boundaries.ypxEnd;
 
             const newY = boundaries.bottomY;
@@ -76,8 +76,8 @@ export class GameScene extends Container implements IScene {
         for (let i = this.discoSnake.length - 1; i >= 0; i--) {
           const oldCoords = getCoordsFromSnake(this.discoSnake[i].coords);
 
-          // if unit on edge
-          if (this.discoSnake[i].snakeUnit.x > boundaries.rightEdge) {
+          // if first unit on edge
+          if (i === 0 && this.discoSnake[i].snakeUnit.x > boundaries.rightEdge) {
             this.discoSnake[i].snakeUnit.x = CELL_SIZE;
 
             const newX = boundaries.leftX;
@@ -107,8 +107,8 @@ export class GameScene extends Container implements IScene {
         for (let i = this.discoSnake.length - 1; i >= 0; i--) {
           const oldCoords = getCoordsFromSnake(this.discoSnake[i].coords);
 
-          // if unit on edge
-          if (this.discoSnake[i].snakeUnit.x <= boundaries.leftEdge) {
+          // if first unit on edge
+          if (i === 0 && this.discoSnake[i].snakeUnit.x <= boundaries.leftEdge) {
             this.discoSnake[i].snakeUnit.x = boundaries.xpxEnd;
 
             const newX = boundaries.rightX;
@@ -138,8 +138,8 @@ export class GameScene extends Container implements IScene {
         for (let i = this.discoSnake.length - 1; i >= 0; i--) {
           const oldCoords = getCoordsFromSnake(this.discoSnake[i].coords);
 
-          // if unit on edge
-          if (this.discoSnake[i].snakeUnit.y > boundaries.bottomEdge) {
+          // if first unit on edge
+          if (i === 0 && this.discoSnake[i].snakeUnit.y > boundaries.bottomEdge) {
             this.discoSnake[i].snakeUnit.y = CELL_SIZE * 4;
 
             const newY = boundaries.topY;
