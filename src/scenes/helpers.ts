@@ -94,9 +94,35 @@ export const getCoordsFromSnake = (cell?: string): number[] => {
 };
 
 export const generateBootyData = (snake?: SnakeData[]) => {
+  const bootySprites = [
+    { sprite: Sprite.from("Disco Ball 1"), chance: 6, points: 1 },
+    { sprite: Sprite.from("Disco Ball 2"), chance: 6, points: 1 },
+    { sprite: Sprite.from("Disco Ball 3"), chance: 6, points: 1 },
+    { sprite: Sprite.from("Disco Ball 4"), chance: 6, points: 1 },
+    { sprite: Sprite.from("Disco Ball 5"), chance: 6, points: 1 },
+    { sprite: Sprite.from("Disco Ball 6"), chance: 6, points: 1 },
+    { sprite: Sprite.from("Disco Ball 7"), chance: 6, points: 1 },
+    { sprite: Sprite.from("Disco Ball 8"), chance: 6, points: 1 },
+    { sprite: Sprite.from("Disco Ball 9"), chance: 6, points: 1 },
+    { sprite: Sprite.from("Disco Ball 10"), chance: 6, points: 1 },
+    { sprite: Sprite.from("Disco Ball 11"), chance: 6, points: 1 },
+    { sprite: Sprite.from("Disco Ball 12"), chance: 6, points: 1 },
+    /* ---- */
+    { sprite: Sprite.from("Astra"), chance: 3, points: 2 },
+    { sprite: Sprite.from("Commodore Red"), chance: 3, points: 2 },
+    { sprite: Sprite.from("Goracy Brew"), chance: 3, points: 3 },
+    { sprite: Sprite.from("Pale Aged Vodka"), chance: 3, points: 4 },
+    { sprite: Sprite.from("Potent Pilsner"), chance: 3, points: 2 },
+    { sprite: Sprite.from("Preptide"), chance: 3, points: 3 },
+    { sprite: Sprite.from("Pyrholidon"), chance: 3, points: 2 },
+    { sprite: Sprite.from("Speedbottle"), chance: 3, points: 3 },
+    { sprite: Sprite.from("Tioumoutiri"), chance: 3, points: 3 },
+  ];
+  const bootyKim = { sprite: Sprite.from("Kim"), chance: 1, points: 5 };
+
   // TODO Randomize first coords
   const coords = !snake ? "10,10" : snake.map((s) => s.coords).join(";");
-  const ballNumber = Math.ceil(Math.random() * 10);
+
   let rndXCell = CELL_SIZE;
   let rndYCell = CELL_SIZE;
 
@@ -119,14 +145,18 @@ export const generateBootyData = (snake?: SnakeData[]) => {
   const sunriseParabellum =
     Math.floor(Math.random() * 100) % MAGIC_KIM_NUMBER === 0;
 
-  const booty: Sprite = Sprite.from(`disco ball ${ballNumber}`);
+  const bootyNumber = Math.floor(Math.random() * bootySprites.length);
+  console.log("bootyNumber", bootyNumber);
+  const booty: Sprite = bootySprites[bootyNumber].sprite;
   booty.x = xCellpx;
   booty.y = yCellpx;
 
+  booty.name = sunriseParabellum ? "Kim" : `Disco Ball ${bootyNumber}`;
+
   return {
-    booty,
+    booty: sunriseParabellum ? bootyKim.sprite : booty,
+    points: sunriseParabellum ? bootyKim.points : bootySprites[bootyNumber].points,
     coords,
-    ballNumber,
     xCellpx, // make same as coords?
     yCellpx,
     sunriseParabellum,

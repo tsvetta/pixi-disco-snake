@@ -23,9 +23,7 @@ export class GameScene extends Container implements IScene {
   // @ts-ignore
   private animatedBooty: Tween<ObservablePoint<any>>;
 
-  private discoBooty: Sprite = Sprite.from(
-    `disco ball ${this.bootyData.ballNumber}`
-  );
+  private discoBooty: Sprite = this.bootyData.booty;
   private grid: Graphics = drawGrid(Manager.width, Manager.height);
   private points: number = 0;
   private pointsCounter = new BitmapText(`${this.points}`, {
@@ -167,13 +165,7 @@ export class GameScene extends Container implements IScene {
 
   private createNewBooty = () => {
     this.bootyData = generateBootyData(this.discoSnake);
-    this.discoBooty = this.bootyData.sunriseParabellum
-      ? Sprite.from("Kim")
-      : Sprite.from(`disco ball ${this.bootyData.ballNumber}`);
-
-    this.discoBooty.name = this.bootyData.sunriseParabellum
-      ? "Kim"
-      : `disco ball ${this.bootyData.ballNumber}`;
+    this.discoBooty = this.bootyData.booty;
 
     this.addChild(this.discoBooty);
 
@@ -246,8 +238,8 @@ export class GameScene extends Container implements IScene {
 
     this.discoSnake = [
       { snakeUnit: Sprite.from("Harry"), coords: "10,10" },
-      { snakeUnit: Sprite.from("Harry"), coords: "10,11" },
-      { snakeUnit: Sprite.from("Harry"), coords: "10,12" },
+      { snakeUnit: Sprite.from("Yellow Plastic Bag"), coords: "10,11" },
+      { snakeUnit: Sprite.from("Prybar"), coords: "10,12" },
     ] as SnakeData[];
     this.discoSnake.forEach((_, i) => {
       this.discoSnake[i].snakeUnit.x =
@@ -283,13 +275,7 @@ export class GameScene extends Container implements IScene {
       ).length !== 0;
 
     if (isCollidedWithBooty) {
-      // luck!
-      if (this.bootyData.sunriseParabellum) {
-        this.points += 5;
-      } else {
-        this.points++;
-      }
-
+      this.points += this.bootyData.points;
       this.pointsCounter.text = `${this.points}`;
 
       // add new poart to the snake's tail, not animated
