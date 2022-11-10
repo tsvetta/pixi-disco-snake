@@ -45,6 +45,14 @@ object-assign
  */
 
 /*!
+ * @pixi/filter-glow - v4.2.0
+ * Compiled Fri, 05 Aug 2022 19:53:35 UTC
+ *
+ * @pixi/filter-glow is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+/*!
  * @pixi/math - v6.5.8
  * Compiled Sun, 23 Oct 2022 23:01:45 UTC
  *
